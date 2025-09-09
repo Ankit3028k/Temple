@@ -63,7 +63,7 @@
         <h1 class="text-2xl font-semibold">श्री महावीराय नमः</h1>
       </div>
       <nav>
-        <a href="admin.html" class="text-white hover:text-gray-300">Admin Login</a>
+        <a href="#" class="text-white hover:text-gray-300">Public Access</a>
       </nav>
     </div>
   </header>
@@ -121,28 +121,16 @@
       }
 
       document.addEventListener('DOMContentLoaded', () => {
-        const token = localStorage.getItem('token'); // Get token from localStorage
-
-        if (!token) {
-          alert('You need to be logged in to view donation details.');
-          window.location.href = '/login.html'; // Redirect to login page
-          return;
-        }
-
         // Fetch summary data
         fetch('http://localhost:3000/api/donations/summary', {
           method: 'GET',
           headers: {
-            'Authorization': `Bearer ${token}`,
             'Content-Type': 'application/json'
           }
         })
         .then(response => {
-          if (response.status === 401 || response.status === 403) {
-            alert('Session expired or unauthorized. Please log in again.');
-            localStorage.removeItem('token');
-            window.location.href = '/login.html';
-            return Promise.reject('Unauthorized');
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
           }
           return response.json();
         })
@@ -156,22 +144,19 @@
         })
         .catch(error => {
           console.error('Error fetching summary details:', error);
-          if (error !== 'Unauthorized') {
-            alert('Failed to load summary details. Please try again later.');
-          }
+          alert('Failed to load summary details. Please try again later.');
         });
 
         // Fetch donation details
         fetch('http://localhost:3000/api/donations', {
           method: 'GET',
           headers: {
-            'Authorization': `Bearer ${token}`,
             'Content-Type': 'application/json'
           }
         })
         .then(response => {
-          if (response.status === 401 || response.status === 403) {
-            return Promise.reject('Unauthorized');
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
           }
           return response.json();
         })
@@ -187,9 +172,7 @@
         })
         .catch(error => {
           console.error('Error fetching donation details:', error);
-          if (error !== 'Unauthorized') {
-            alert('Failed to load donation details. Please try again later.');
-          }
+          alert('Failed to load donation details. Please try again later.');
         });
       });
     </script>
