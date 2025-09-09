@@ -170,7 +170,7 @@
 
     async function fetchDonations() {
       try {
-        const response = await fetch('https://temple-4bpo.onrender.com/api/donations', {
+        const response = await fetch('https://temple-4bpo.onrender.com/api/donations/admin', {
           headers: getAuthHeaders()
         });
         if (!response.ok) {

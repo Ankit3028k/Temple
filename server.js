@@ -198,6 +198,14 @@ app.get('/api/donations', async (req, res) => {
     res.status(500).send(err);
   }
 });
+app.get('/api/donations/admin',authenticateToken, async (req, res) => {
+  try {
+    const donations = await Donation.find({}); 
+    res.json(donations);
+  } catch (err) {
+    res.status(500).send(err);
+  }
+});
 
 // Add a new donation (protected)
 app.post('/api/donations', authenticateToken, async (req, res) => {
