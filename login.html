@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="bg-[#FDFDFD] font-['Inter'] text-gray-900 antialiased min-h-screen flex flex-col">
+  <header class="bg-[#5A204A] text-white shadow-lg sticky top-0 z-20">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <img src="logo2.png" alt="Jain Logo" class="h-10 w-auto">
+        <h1 class="text-2xl font-semibold">श्री महावीराय नमः</h1>
+      </div>
+      <nav>
+        <a href="admin.html" class="text-white hover:text-gray-300 transition-colors duration-200">Admin Login</a>
+      </nav>
+    </div>
+  </header>
+  <main class="flex-grow flex items-center justify-center">
+    <div class="max-w-md w-full mx-auto p-8 bg-white rounded-xl shadow-lg">
+        <h2 class="text-3xl font-bold text-center mb-8 text-gray-800">Login</h2>
+        <form id="loginForm" class="space-y-6">
+            <div>
+                <label class="block text-gray-700 text-sm font-semibold mb-2" for="username">Username</label>
+                <input class="w-full px-4 py-3 text-gray-700 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#512746] focus:border-transparent transition-all duration-200" type="text" id="username" name="username" required>
+            </div>
+            <div>
+                <label class="block text-gray-700 text-sm font-semibold mb-2" for="password">Password</label>
+                <input class="w-full px-4 py-3 text-gray-700 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#512746] focus:border-transparent transition-all duration-200" type="password" id="password" name="password" required>
+            </div>
+            <button class="w-full bg-[#512746] hover:bg-[#6a3a5c] text-white font-semibold py-3 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#512746] focus:ring-offset-2 transition-colors duration-200" type="submit">Login</button>
+            
+        </form>
+    </div>
+  </main>
+
+    <!-- Popup Modal Structure -->
+  <div id="popupModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden flex items-center justify-center z-50">
+    <div class="bg-white p-6 rounded-lg shadow-xl max-w-sm w-full mx-4">
+      <h3 id="popupTitle" class="text-xl font-bold mb-4 text-gray-800">Error</h3>
+      <p id="popupMessage" class="text-gray-700 mb-6"></p>
+      <button id="popupCloseButton" class="w-full bg-[#512746] hover:bg-[#6a3a5c] text-white font-semibold py-2 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#512746] focus:ring-offset-2 transition-colors duration-200">Close</button>
+    </div>
+  </div>
+
+    <script>
+        const popupModal = document.getElementById('popupModal');
+        const popupTitle = document.getElementById('popupTitle');
+        const popupMessage = document.getElementById('popupMessage');
+        const popupCloseButton = document.getElementById('popupCloseButton');
+
+        function showPopup(title, message) {
+            popupTitle.textContent = title;
+            popupMessage.textContent = message;
+            popupModal.classList.remove('hidden');
+        }
+
+        function hidePopup() {
+            popupModal.classList.add('hidden');
+        }
+
+        popupCloseButton.addEventListener('click', hidePopup);
+
+        document.getElementById('loginForm').addEventListener('submit', async (event) => {
+            event.preventDefault();
+
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            // const messageElement = document.getElementById('message'); // No longer needed
+
+            try {
+                const response = await fetch('http://localhost:3000/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ username, password }),
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    localStorage.setItem('token', data.accessToken);
+                    window.location.href = '/admin.html';
+                } else {
+                    const errorData = await response.text();
+                    showPopup('Login Failed', `Login failed: ${errorData}`);
+                }
+            } catch (error) {
+                console.error('Error during login:', error);
+                showPopup('Error', 'An error occurred. Please try again.');
+            }
+        });
+    </script>
+</body>
+</html>

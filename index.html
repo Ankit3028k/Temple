@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>श्री महावीराय नमः</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+  <style>
+    /* Hide scrollbar for all browsers while maintaining scroll functionality */
+    .no-scrollbar::-webkit-scrollbar {
+      display: none; /* Chrome, Safari, Edge */
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none; /* Internet Explorer and Edge */
+      scrollbar-width: none; /* Firefox */
+    }
+    /* Table cell styling */
+    #donationsTable th,
+    #donationsTable td {
+      padding: 12px 16px;
+      text-align: left;
+      border-bottom: 1px solid #e5e7eb;
+    }
+    #donationsTable {
+      border-collapse: collapse;
+      width: 100%;
+    }
+    /* Card styling for summary stats */
+    .summary-card {
+      background: linear-gradient(145deg, #ffffff, #f1f5f9); /* Subtle light gradient */
+      border: 1px solid #e2e8f0; /* Light gray border */
+      border-radius: 12px;
+      padding: 16px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05); /* Soft shadow */
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .summary-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1); /* Enhanced shadow on hover */
+    }
+    .summary-card .value {
+      font-size: 1.75rem; /* Larger value for emphasis */
+      font-weight: 700;
+      color: #1e293b; /* Dark slate for contrast */
+      margin-bottom: 8px;
+    }
+    .summary-card .label {
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: #64748b; /* Muted slate for labels */
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+  </style>
+</head>
+<body class="bg-[#FDFDFD] font-['Inter'] text-gray-900 antialiased">
+  <header class="bg-[#5A204A] text-white shadow-lg sticky top-0 z-20">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <img src="logo2.png" alt="Jain Logo" class="h-10 w-auto">
+        <h1 class="text-2xl font-semibold">श्री महावीराय नमः</h1>
+      </div>
+      <nav>
+        <a href="admin.html" class="text-white hover:text-gray-300">Admin Login</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="mx-auto px-4 sm:px-6 lg:px-8 py-8 h-[80vh]">
+    <div class="mx-auto p-8 bg-white rounded-lg shadow-md mt-10 w-[90vw]" style="animation: fadeInFromBottom 0.8s ease-out forwards;">
+      <h1 class="text-3xl font-bold text-gray-800 mb-6 text-center" style="animation: pulseEffect 2s infinite alternate;">All Donation Details</h1>
+
+      <!-- Summary Stats -->
+      <div class="mb-8 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+        <div class="summary-card text-center" data-aos="fade-up">
+          <div class="value" id="totalRecords">0</div>
+          <div class="label">Total Records</div>
+        </div>
+        <div class="summary-card text-center" data-aos="fade-up" data-aos-delay="100">
+          <div class="value" id="pendingCount">0</div>
+          <div class="label">Pending Count</div>
+        </div>
+        <div class="summary-card text-center" data-aos="fade-up" data-aos-delay="200">
+          <div class="value" id="completedCount">0</div>
+          <div class="label">Completed Count</div>
+        </div>
+        <div class="summary-card text-center" data-aos="fade-up" data-aos-delay="300">
+          <div class="value" id="totalAmount">₹0.00</div>
+          <div class="label">Total Amount</div>
+        </div>
+        <div class="summary-card text-center" data-aos="fade-up" data-aos-delay="400">
+          <div class="value" id="completedAmount">₹0.00</div>
+          <div class="label">Completed Amount</div>
+        </div>
+      </div>
+
+      <!-- Table with no scrollbar -->
+      <div class="overflow-x-auto no-scrollbar">
+        <table id="donationsTable" class="min-w-full bg-white border border-gray-200">
+          <thead>
+            <tr>
+              <th class="py-3 px-4 bg-gray-100 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Donor Name</th>
+              <th class="py-3 px-4 bg-gray-100 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
+              <th class="py-3 px-4 bg-gray-100 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+              <th class="py-3 px-4 bg-gray-100 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Donation details will be loaded here -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <script>
+      function formatCurrency(n) {
+        const amount = Number(n || 0);
+        return new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 2 }).format(amount);
+      }
+
+      document.addEventListener('DOMContentLoaded', () => {
+        const token = localStorage.getItem('token'); // Get token from localStorage
+
+        if (!token) {
+          alert('You need to be logged in to view donation details.');
+          window.location.href = '/login.html'; // Redirect to login page
+          return;
+        }
+
+        // Fetch summary data
+        fetch('http://localhost:3000/api/donations/summary', {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
+        })
+        .then(response => {
+          if (response.status === 401 || response.status === 403) {
+            alert('Session expired or unauthorized. Please log in again.');
+            localStorage.removeItem('token');
+            window.location.href = '/login.html';
+            return Promise.reject('Unauthorized');
+          }
+          return response.json();
+        })
+        .then(summaryData => {
+          console.log('Summary Data:', summaryData);
+          document.getElementById('totalRecords').textContent = summaryData.totalRecords || 0;
+          document.getElementById('pendingCount').textContent = summaryData.pendingCount || 0;
+          document.getElementById('completedCount').textContent = summaryData.completedCount || 0;
+          document.getElementById('totalAmount').textContent = formatCurrency(summaryData.totalAmount || 0);
+          document.getElementById('completedAmount').textContent = formatCurrency(summaryData.completedAmount || 0);
+        })
+        .catch(error => {
+          console.error('Error fetching summary details:', error);
+          if (error !== 'Unauthorized') {
+            alert('Failed to load summary details. Please try again later.');
+          }
+        });
+
+        // Fetch donation details
+        fetch('http://localhost:3000/api/donations', {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
+        })
+        .then(response => {
+          if (response.status === 401 || response.status === 403) {
+            return Promise.reject('Unauthorized');
+          }
+          return response.json();
+        })
+        .then(data => {
+          const tableBody = document.getElementById('donationsTable').getElementsByTagName('tbody')[0];
+          data.forEach(donation => {
+            const row = tableBody.insertRow();
+            row.insertCell().textContent = donation.donor;
+            row.insertCell().textContent = donation.amount;
+            row.insertCell().textContent = new Date(donation.date).toLocaleDateString();
+            row.insertCell().textContent = donation.status;
+          });
+        })
+        .catch(error => {
+          console.error('Error fetching donation details:', error);
+          if (error !== 'Unauthorized') {
+            alert('Failed to load donation details. Please try again later.');
+          }
+        });
+      });
+    </script>
+  </main>
+
+  <footer class="bg-[#5A204A] text-white text-center p-4 mt-[150px]">
+    <p>&copy; 2025 श्री महावीराय नमः. All rights reserved.</p>
+    <!-- <p>Contact: +91 9876543210</p> -->
+  </footer>
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <script>
+    AOS.init();
+  </script>
+</body>
+</html>
