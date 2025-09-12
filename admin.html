@@ -3,24 +3,639 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>श्री महावीराय नमः</title>
+  <title>श्री शांतिनाथ दिगम्बर जैन मंदिर</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/style.css">
+  <style>
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 50;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0, 0, 0, 0.6);
+      align-items: center;
+      justify-content: center;
+      animation: fadeIn 0.3s ease-in-out;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    .modal-content {
+      background: linear-gradient(145deg, #ffffff, #f9f9f9);
+      margin: 1.5rem auto;
+      padding: 1rem 0.5rem;
+      border-radius: 0.75rem;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+      width: 95%;
+      max-width: 480px;
+      min-width: 280px;
+      position: relative;
+      border: 2px solid #D4AF37;
+      animation: slideUp 0.3s ease-in-out;
+    }
+    @keyframes slideUp {
+      from { transform: translateY(20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+    .modal-close {
+      position: absolute;
+      top: 0.5rem;
+      right: 0.5rem;
+      font-size: 1.25rem;
+      font-weight: bold;
+      color: #5A204A;
+      cursor: pointer;
+      transition: color 0.2s, transform 0.2s;
+      line-height: 1;
+    }
+    .modal-close:hover {
+      color: #D4AF37;
+      transform: scale(1.1);
+    }
+    #shareWhatsAppBtn {
+      position: absolute;
+      top: 0.5rem;
+      right: 2.5rem;
+      width: 2rem;
+      height: 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: #5A204A;
+      border-radius: 50%;
+      cursor: pointer;
+      transition: background-color 0.2s, transform 0.2s;
+    }
+    #shareWhatsAppBtn:hover {
+      background-color: #4A1A3D;
+      transform: scale(1.1);
+    }
+    #shareWhatsAppBtn .share-icon {
+      width: 1.25rem;
+      height: 1.25rem;
+      object-fit: contain;
+      filter: brightness(0) invert(1); /* Ensures white color for icon */
+    }
+    .modal-header {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+      padding-bottom: 0.75rem;
+      border-bottom: 2px solid #D4AF37;
+      margin-bottom: 0.75rem;
+      gap: 0.5rem;
+      max-width: 90%;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .modal-header .logo-placeholder {
+      width: 2.5rem;
+      height: auto;
+      object-fit: contain;
+    }
+    .modal-header .center-text-wrapper {
+      display: flex;
+      justify-content: center;
+      flex: 1;
+    }
+    .modal-header .text-container {
+      display: flex;
+      flex-direction: column;
+      text-align: center;
+      max-width: 80%;
+    }
+    .modal-header .spacer {
+      width: 2.5rem; /* Matches logo width for balance */
+    }
+    .modal-header h2 {
+      font-size: clamp(1.1rem, 4.5vw, 1.25rem);
+      font-weight: 700;
+      color: #5A204A;
+      margin: 0;
+      line-height: 1.2;
+    }
+    .modal-header p {
+      font-size: clamp(0.7rem, 2.8vw, 0.8rem);
+      color: #64748b;
+      margin: 0.2rem 0 0;
+    }
+    .modal-details {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.5rem;
+      padding: 0.75rem 0;
+      max-width: 90%;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .modal-details p {
+      margin: 0;
+      font-size: clamp(0.75rem, 3.2vw, 0.85rem);
+      color: #1e293b;
+      display: flex;
+      flex-direction: column;
+    }
+    .modal-details p span:first-child {
+      font-weight: 600;
+      color: #5A204A;
+      font-size: clamp(0.65rem, 2.8vw, 0.75rem);
+    }
+    .modal-details p span:last-child {
+      color: #1e293b;
+      font-weight: 400;
+    }
+    .modal-footer {
+      text-align: center;
+      margin-top: 0.75rem;
+      padding-top: 0.75rem;
+      border-top: 1px solid #e5e7eb;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      max-width: 90%;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .modal-footer p {
+      font-size: clamp(0.65rem, 2.8vw, 0.75rem);
+      color: #64748b;
+      margin: 0;
+    }
+    .error-text {
+      color: #dc2626;
+      font-size: 0.75rem;
+      margin-top: 0.2rem;
+    }
+    @media (max-width: 640px) {
+      .modal-content {
+        padding: 0.75rem 0.5rem;
+        margin: 1rem auto;
+        border-radius: 0.5rem;
+      }
+      .modal-close {
+        top: 0.4rem;
+        right: 0.4rem;
+        font-size: 1rem;
+      }
+      #shareWhatsAppBtn {
+        top: 0.4rem;
+        right: 2rem;
+        width: 1.75rem;
+        height: 1.75rem;
+      }
+      #shareWhatsAppBtn .share-icon {
+        width: 1rem;
+        height: 1rem;
+      }
+      .modal-header {
+        gap: 0.4rem;
+        padding-bottom: 0.5rem;
+        margin-bottom: 0.5rem;
+        max-width: 95%;
+      }
+      .modal-header .logo-placeholder {
+        width: 2rem;
+      }
+      .modal-header .spacer {
+        width: 2rem;
+      }
+      .modal-details {
+        gap: 0.4rem;
+        padding: 0.5rem 0;
+        max-width: 95%;
+      }
+      .modal-details p {
+        font-size: clamp(0.7rem, 3vw, 0.8rem);
+      }
+      .modal-details p span:first-child {
+        font-size: clamp(0.6rem, 2.5vw, 0.7rem);
+      }
+      .modal-footer {
+        margin-top: 0.5rem;
+        padding-top: 0.5rem;
+        max-width: 95%;
+      }
+      .modal-footer p {
+        font-size: clamp(0.6rem, 2.5vw, 0.7rem);
+      }
+    }
+    @media (max-width: 480px) {
+      .modal-content {
+        min-width: 90%;
+        padding: 0.5rem 0.25rem;
+      }
+      .modal-close {
+        top: 0.4rem;
+        right: 0.4rem;
+        font-size: 0.875rem;
+      }
+      #shareWhatsAppBtn {
+        right: 1.75rem;
+        width: 1.5rem;
+        height: 1.5rem;
+      }
+      #shareWhatsAppBtn .share-icon {
+        width: 0.875rem;
+        height: 0.875rem;
+      }
+      .modal-header {
+        max-width: 95%;
+      }
+      .modal-header .logo-placeholder {
+        width: 1.75rem;
+      }
+      .modal-header .spacer {
+        width: 1.75rem;
+      }
+      .modal-header h2 {
+        font-size: clamp(1rem, 4vw, 1.15rem);
+      }
+      .modal-header p {
+        font-size: clamp(0.6rem, 2.5vw, 0.7rem);
+      }
+      .modal-details {
+        max-width: 95%;
+      }
+      .modal-details p {
+        font-size: clamp(0.65rem, 2.8vw, 0.75rem);
+      }
+      .modal-details p span:first-child {
+        font-size: clamp(0.55rem, 2.3vw, 0.65rem);
+      }
+      .modal-footer {
+        max-width: 95%;
+      }
+    }
+    /* Other styles (unchanged) */
+    .error-text {
+      color: #dc2626;
+      font-size: 0.75rem;
+      margin-top: 0.2rem;
+    }
+    header {
+      background-color: #5A204A;
+      color: white;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      position: sticky;
+      top: 0;
+      z-index: 20;
+    }
+    header .max-w-7xl {
+      max-width: 80rem;
+      margin-left: auto;
+      margin-right: auto;
+      padding: 1rem 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    header .flex {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    header img {
+      height: 2.5rem;
+      width: auto;
+    }
+    header a {
+      color: white;
+      text-decoration: none;
+    }
+    header a:hover {
+      color: #d1d5db;
+    }
+    header h1 {
+      font-size: 1.5rem;
+      font-weight: 600;
+    }
+    main {
+      max-width: 80rem;
+      margin-left: auto;
+      margin-right: auto;
+      padding: 2rem 1.5rem;
+    }
+    .mb-8 {
+      margin-bottom: 2rem;
+    }
+    .grid-cols-2 {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1rem;
+    }
+    @media (min-width: 768px) {
+      .md\:grid-cols-3 {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+    }
+    @media (min-width: 1024px) {
+      .lg\:grid-cols-5 {
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+      }
+    }
+    .bg-white {
+      background-color: white;
+    }
+    .rounded-lg {
+      border-radius: 0.5rem;
+    }
+    .p-4 {
+      padding: 1rem;
+    }
+    .shadow-sm {
+      box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    }
+    .text-center {
+      text-align: center;
+    }
+    .text-2xl {
+      font-size: 1.5rem;
+      line-height: 2rem;
+    }
+    .font-bold {
+      font-weight: 700;
+    }
+  
+    .text-sm {
+      font-size: 0.875rem;
+      line-height: 1.25rem;
+    }
+    .text-gray-600 {
+      color: #4b5563;
+    }
+    .grid-cols-1 {
+      display: grid;
+      grid-template-columns: 1fr;
+    }
+    @media (min-width: 1024px) {
+      .lg\:grid-cols-3 {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+      .lg\:col-span-1 {
+        grid-column: span 1 / span 1;
+      }
+      .lg\:col-span-2 {
+        grid-column: span 2 / span 2;
+      }
+    }
+    .gap-8 {
+      gap: 2rem;
+    }
+    .rounded-xl {
+      border-radius: 0.75rem;
+    }
+    .shadow-md {
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    }
+    .p-6 {
+      padding: 1.5rem;
+    }
+    .text-xl {
+      font-size: 1.25rem;
+      line-height: 1.75rem;
+    }
+    .font-semibold {
+      font-weight: 600;
+    }
+    .text-gray-800 {
+      color: #1f2937;
+    }
+    .mb-6 {
+      margin-bottom: 1.5rem;
+    }
+    .space-y-5 > :not([hidden]) ~ :not([hidden]) {
+      margin-top: 1.25rem;
+    }
+    .block {
+      display: block;
+    }
+    .text-sm {
+      font-size: 0.875rem;
+      line-height: 1.25rem;
+    }
+    .font-medium {
+      font-weight: 500;
+    }
+    .text-gray-700 {
+      color: #374151;
+    }
+    .mt-1 {
+      margin-top: 0.25rem;
+    }
+    .w-full {
+      width: 100%;
+    }
+    .px-4 {
+      padding-left: 1rem;
+      padding-right: 1rem;
+    }
+    .py-3 {
+      padding-top: 0.75rem;
+      padding-bottom: 0.75rem;
+    }
+    .border {
+      border-width: 1px;
+    }
+    .border-gray-300 {
+      border-color: #d1d5db;
+    }
+    .rounded-lg {
+      border-radius: 0.5rem;
+    }
+    .focus\:outline-none:focus {
+      outline: none;
+    }
+    .focus\:ring-2:focus {
+      --tw-ring-offset-width: 2px;
+      box-shadow: 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color), 0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color);
+    }
+  
+    .transition {
+      transition-property: all;
+      transition-duration: 150ms;
+      transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .grid-cols-1 {
+      display: grid;
+      grid-template-columns: 1fr;
+    }
+    @media (min-width: 640px) {
+      .sm\:grid-cols-2 {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+    .gap-4 {
+      gap: 1rem;
+    }
+    .flex {
+      display: flex;
+    }
+    .gap-4 {
+      gap: 1rem;
+    }
+    .w-full {
+      width: 100%;
+    }
+    @media (min-width: 640px) {
+      .sm\:w-auto {
+        width: auto;
+      }
+    }
+    .px-6 {
+      padding-left: 1.5rem;
+      padding-right: 1.5rem;
+    }
+    .py-3 {
+      padding-top: 0.75rem;
+      padding-bottom: 0.75rem;
+    }
+   
+    .bg-gray-200 {
+      background-color: #e5e7eb;
+    }
+    .text-gray-800 {
+      color: #1f2937;
+    }
+    .hover\:bg-gray-300:hover {
+      background-color: #d1d5db;
+    }
+    .text-xs {
+      font-size: 0.75rem;
+      line-height: 1rem;
+    }
+    .text-gray-500 {
+      color: #6b7280;
+    }
+    .mb-6 {
+      margin-bottom: 1.5rem;
+    }
+    .flex-col {
+      flex-direction: column;
+    }
+    @media (min-width: 640px) {
+      .sm\:flex-row {
+        flex-direction: row;
+      }
+    }
+    .items-center {
+      align-items: center;
+    }
+    .justify-between {
+      justify-content: space-between;
+    }
+    .flex-wrap {
+      flex-wrap: wrap;
+    }
+    .w-full {
+      width: 100%;
+    }
+    @media (min-width: 640px) {
+      .sm\:w-64 {
+        width: 16rem;
+      }
+    }
+    .py-2 {
+      padding-top: 0.5rem;
+      padding-bottom: 0.5rem;
+    }
+    .bg-white {
+      background-color: white;
+    }
+    .text-gray-900 {
+      color: #111827;
+    }
+    .gap-3 {
+      gap: 0.75rem;
+    }
+    .overflow-x-auto {
+      overflow-x: auto;
+    }
+    .border-gray-200 {
+      border-color: #e5e7eb;
+    }
+    .table-auto {
+      table-layout: auto;
+    }
+    .text-sm {
+      font-size: 0.875rem;
+      line-height: 1.25rem;
+    }
+    .text-gray-600 {
+      color: #4b5563;
+    }
+    .py-4 {
+      padding-top: 1rem;
+      padding-bottom: 1rem;
+    }
+    .px-4 {
+      padding-left: 1rem;
+      padding-right: 1rem;
+    }
+    .text-left {
+      text-align: left;
+    }
+    .font-medium {
+      font-weight: 500;
+    }
+    .hidden {
+      display: none;
+    }
+    .py-8 {
+      padding-top: 2rem;
+      padding-bottom: 2rem;
+    }
+    .text-gray-500 {
+      color: #6b7280;
+    }
+    .border-t {
+      border-top-width: 1px;
+    }
+    .hover\:bg-gray-50:hover {
+      background-color: #f9fafb;
+    }
+    .px-3 {
+      padding-left: 0.75rem;
+      padding-right: 0.75rem;
+    }
+    .py-1 {
+      padding-top: 0.25rem;
+      padding-bottom: 0.25rem;
+    }
+    .rounded-full {
+      border-radius: 9999px;
+    }
+   
+    .h-5 {
+      height: 1.25rem;
+    }
+    .w-5 {
+      width: 1.25rem;
+    }
+ 
+    .antialiased {
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+  </style>
 </head>
 <body class="bg-[#FDFDFD] font-['Inter'] text-gray-900 antialiased">
   <header class="bg-[#5A204A] text-white shadow-lg sticky top-0 z-20">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
       <div class="flex items-center gap-3">
-        <img src="logo2.png" alt="Jain Logo" class="h-10 w-auto ">
-             <a href="index.html" class="text-white hover:text-gray-300"><h1 class="text-2xl font-semibold">श्री महावीराय नमः</h1></a> 
-       
+        <img src="logo2.png" alt="Jain Logo" class="h-10 w-auto">
+        <a href="index.html" class="text-white hover:text-gray-300"><h1 class="text-2xl font-semibold">श्री शांतिनाथ दिगम्बर जैन मंदिर</h1></a>
       </div>
     </div>
   </header>
 
   <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-    <!-- Summary Stats -->
     <div class="mb-8 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
       <div class="bg-white rounded-lg p-4 shadow-sm text-center">
         <div class="text-2xl font-bold text-[#5A204A]" id="totalCount">0</div>
@@ -35,7 +650,7 @@
         <div class="text-sm text-gray-600">Completed Count</div>
       </div>
       <div class="bg-white rounded-lg p-4 shadow-sm text-center">
-        <div class="text-2xl font-bold text-[#5A204A]" id="totalAmount">₹0.00</div>
+        <div class="text-2xl font-bold text-[#5A204A]" id="totalAmountDisplay">₹0.00</div>
         <div class="text-sm text-gray-600">Total Amount</div>
       </div>
       <div class="bg-white rounded-lg p-4 shadow-sm text-center">
@@ -46,319 +661,510 @@
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
       <section class="bg-white rounded-xl shadow-md p-6 lg:col-span-1">
-      <h2 class="text-xl font-semibold text-gray-800 mb-6">Add / Edit Donation</h2>
-      <form id="donationForm" class="space-y-5">
-        <input type="hidden" id="editingId" />
-        <div>
-          <label for="donor" class="block text-sm font-medium text-gray-700">Donor Name</label>
-          <input id="donor" placeholder="e.g., Ramesh Kumar" required class="mt-1 w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#5A204A] transition" />
-        </div>
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <h2 class="text-xl font-semibold text-gray-800 mb-6">Add / Edit Donation</h2>
+        <form id="donationForm" class="space-y-5">
+          <input type="hidden" id="editingId" />
           <div>
-            <label for="amount" class="block text-sm font-medium text-gray-700">Amount (INR)</label>
-            <input id="amount" type="number" min="0" step="0.01" placeholder="e.g., 500.00" required class="mt-1 w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#5A204A] transition" />
+            <label for="donor" class="block text-sm font-medium text-gray-700">Donor Name</label>
+            <input id="donor" placeholder="e.g., Your name" required class="mt-1 w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#5A204A] transition" />
+            <p id="donorError" class="error-text hidden">Please enter a valid donor name.</p>
           </div>
           <div>
-            <label for="date" class="block text-sm font-medium text-gray-700">Date</label>
-            <input id="date" type="date" required class="mt-1 w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#5A204A] transition" />
+            <label for="eventName" class="block text-sm font-medium text-gray-700">Event Name</label>
+            <input id="eventName" placeholder="e.g., Event name " required class="mt-1 w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#5A204A] transition" />
+            <p id="eventNameError" class="error-text hidden">Please enter a valid event name.</p>
           </div>
-        </div>
-        <div>
-          <label for="status" class="block text-sm font-medium text-gray-700">Status</label>
-          <select id="status" class="mt-1 w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#5A204A] transition">
-            <option value="pending">Pending</option>
-            <option value="completed">Completed</option>
-          </select>
-        </div>
-        <div>
-          <label for="notes" class="block text-sm font-medium text-gray-700">Notes</label>
-          <textarea id="notes" rows="4" placeholder="Optional note or purpose" class="mt-1 w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#5A204A] transition"></textarea>
-        </div>
-        <div class="flex gap-4">
-          <button type="submit" id="saveBtn" class="w-full sm:w-auto px-6 py-3 bg-[#5A204A] text-white rounded-lg hover:bg-[#4A1A3D] transition">Save Donation</button>
-          <button type="button" id="resetBtn" class="w-full sm:w-auto px-6 py-3 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition">Reset</button>
-        </div>
-        <p class="text-xs text-gray-500">Data is now managed by the backend server.</p>
-      </form>
-    </section>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label for="eventDate" class="block text-sm font-medium text-gray-700">Event Date</label>
+              <input id="eventDate" type="date" required class="mt-1 w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#5A204A] transition" />
+              <p id="eventDateError" class="error-text hidden">Please select a valid event date.</p>
+            </div>
+            <div>
+              <label for="totalAmount" class="block text-sm font-medium text-gray-700">Total Amount (INR)</label>
+              <input id="totalAmount" type="number" min="0" step="0.01" placeholder="e.g., 500.00" required class="mt-1 w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#5A204A] transition" />
+              <p id="totalAmountError" class="error-text hidden">Please enter a valid total amount (≥ 0).</p>
+            </div>
+          </div>
+          <div>
+            <label for="paidAmount" class="block text-sm font-medium text-gray-700">Paid Amount (INR)</label>
+            <input id="paidAmount" type="number" min="0" step="0.01" placeholder="e.g., 100.00" required class="mt-1 w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#5A204A] transition" />
+            <p id="paidAmountError" class="error-text hidden">Please enter a valid paid amount (≥ 0 and ≤ total amount).</p>
+          </div>
+          <div class="flex gap-4">
+            <button type="submit" id="saveBtn" class="w-full sm:w-auto px-6 py-3 bg-[#5A204A] text-white rounded-lg hover:bg-[#4A1A3D] transition">Save Donation</button>
+            <button type="button" id="resetBtn" class="w-full sm:w-auto px-6 py-3 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition">Reset</button>
+          </div>
+          <p class="text-xs text-gray-500">Data is managed by the backend server.</p>
+        </form>
+      </section>
 
       <section class="bg-white rounded-xl shadow-md p-6 lg:col-span-2">
-      <h2 class="text-xl font-semibold text-gray-800 mb-6">Donations</h2>
-
-      <!-- Moved Controls -->
-      <div class="mb-6 flex flex-col sm:flex-row gap-4 items-center justify-between flex-wrap">
-        <div class="flex flex-col sm:flex-row gap-3 items-center w-full sm:w-auto">
-          <input id="search" type="search" placeholder="Search donor or notes..." class="w-full sm:w-64 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#5A204A] bg-white text-gray-900 transition" />
-          <select id="filterStatus" class="w-full sm:w-auto px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#5A204A] bg-white text-gray-900">
-            <option value="all">All Statuses</option>
-            <option value="completed">Completed</option>
-            <option value="pending">Pending</option>
-          </select>
+        <h2 class="text-xl font-semibold text-gray-800 mb-6">Donations</h2>
+        <div class="mb-6 flex flex-col sm:flex-row gap-4 items-center justify-between flex-wrap">
+          <div class="flex flex-col sm:flex-row gap-3 items-center w-full sm:w-auto">
+            <input id="search" type="search" placeholder="Search donor or event..." class="w-full sm:w-64 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#5A204A] bg-white text-gray-900 transition" />
+            <select id="filterStatus" class="w-full sm:w-auto px-4  py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#5A204A] bg-white text-gray-900">
+              <option value="all">All Statuses</option>
+              <option value="completed">Completed</option>
+              <option value="pending">Pending</option>
+            </select>
+          </div>
+          <div class="flex gap-3 flex-wrap">
+            <button id="exportCsv" class="w-full sm:w-auto px-4 py-2 bg-[#5A204A] text-white rounded-lg hover:bg-[#4A1A3D] transition">Export CSV</button>
+          </div>
         </div>
-        <div class="flex gap-3 flex-wrap">
-          <button id="exportCsv" class="w-full sm:w-auto px-4 py-2 bg-[#5A204A] text-white rounded-lg hover:bg-[#4A1A3D] transition">Export CSV</button>
-          <button id="backupJson" class="w-full sm:w-auto px-4 py-2 bg-[#5A204A] text-white rounded-lg hover:bg-[#4A1A3D] transition">Backup JSON</button>
-          <button id="clearAll" class="w-full sm:w-auto px-4 py-2 bg-[#5A204A] text-white rounded-lg hover:bg-[#4A1A3D] transition">Clear All</button>
+        <div class="overflow-x-auto border border-gray-200 rounded-lg">
+          <table class="w-full table-auto">
+            <thead>
+              <tr class="text-sm text-gray-600">
+                <th class="py-4 px-4 text-left font-medium">Donor</th>
+                <th class="py-4 px-4 text-left font-medium">Event Date</th>
+                <th class="py-4 px-4 text-left font-medium">Status</th>
+                <th class="py-4 px-4 text-left font-medium">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="tbody"></tbody>
+          </table>
+          <div id="empty" class="hidden text-center py-8 text-gray-500 bg-white">No donations yet. Add the first one.</div>
+        </div>
+      </section>
+    </div>
+
+    <div id="previewModal" class="modal">
+      <div class="modal-content">
+        <span class="modal-close">&times;</span>
+        <button id="shareWhatsAppBtn">
+          <img src="share.png" alt="Share Icon" class="share-icon">
+        </button>
+        <div class="modal-header">
+          <img src="logo2.png" alt="Jain Logo" class="logo-placeholder">
+          <div class="center-text-wrapper">
+            <div class="text-container">
+              <h2>श्री शांतिनाथ दिगम्बर जैन मंदिर</h2>
+              <p>दान रसीद</p>
+            </div>
+          </div>
+          <div class="spacer"></div>
+        </div>
+        <div class="modal-details">
+          <p><span>Donor Name</span><span id="modalDonor"></span></p>
+          <p><span>Event Name</span><span id="modalEventName"></span></p>
+          <p><span>Event Date</span><span id="modalEventDate"></span></p>
+          <p><span>Total Amount</span><span id="modalTotalAmount"></span></p>
+          <p><span>Paid Amount</span><span id="modalPaidAmount"></span></p>
+          <p><span>Pending Amount</span><span id="modalPendingAmount"></span></p>
+          <p><span>Status</span><span id="modalStatus"></span></p>
+        </div>
+        <div class="modal-footer">
+          <p>Thank you for your support.</p>
+          <p>Issued on: <span id="issueDate"></span></p>
         </div>
       </div>
-
-      <div class="overflow-x-auto border border-gray-200 rounded-lg">
-        <table class="w-full table-auto">
-          <thead>
-            <tr class="text-sm text-gray-600">
-              <th class="py-4 px-4 text-left font-medium">Donor</th>
-              <th class="py-4 px-4 text-left font-medium">Amount</th>
-              <th class="py-4 px-4 text-left font-medium">Date</th>
-              <th class="py-4 px-4 text-left font-medium">Status</th>
-              <th class="py-4 px-4 text-left font-medium">Notes</th>
-              <th class="py-4 px-4 text-left font-medium">Actions</th>
-            </tr>
-          </thead>
-          <tbody id="tbody"></tbody>
-        </table>
-        <div id="empty" class="hidden text-center py-8 text-gray-500 bg-white">No donations yet. Add the first one.</div>
-      </div>
-    </section>
     </div>
   </main>
 
   <script>
-    // Utility
-    
-    function formatCurrency(n) {
-      const amount = Number(n || 0);
-      return new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 2 }).format(amount);
-    }
-
-    // Elements
-    const form = document.getElementById('donationForm');
-    const donor = document.getElementById('donor');
-    const amount = document.getElementById('amount');
-    const dateEl = document.getElementById('date');
-    const statusEl = document.getElementById('status');
-    const notes = document.getElementById('notes');
-    const editingId = document.getElementById('editingId');
-    const tbody = document.getElementById('tbody');
-    const empty = document.getElementById('empty');
-    const totalCount = document.getElementById('totalCount');
-    const pendingCount = document.getElementById('pendingCount');
-    const completedCount = document.getElementById('completedCount');
-    const totalAmount = document.getElementById('totalAmount');
-    const completedAmount = document.getElementById('completedAmount');
-    const search = document.getElementById('search');
-    const filterSel = document.getElementById('filterStatus');
-    const exportBtn = document.getElementById('exportCsv');
-    const backupBtn = document.getElementById('backupJson');
-    const clearBtn = document.getElementById('clearAll');
-    const resetBtn = document.getElementById('resetBtn');
-
-    let donations = [];
-    let filterStatus = 'all';
-    let searchText = '';
-
-    // Initialize defaults
-    dateEl.valueAsDate = new Date();
-
-    // Fetch and Render
-    function getAuthHeaders() {
-      const token = localStorage.getItem('token');
-      if (token) {
-        return { 'Authorization': `Bearer ${token}` };
+    document.addEventListener('DOMContentLoaded', () => {
+      // Utility
+      function formatCurrency(n) {
+        return new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 2 }).format(Number(n) || 0);
       }
-      return {};
-    }
 
-    async function fetchDonations() {
-      try {
-        const response = await fetch('https://temple-4bpo.onrender.com/api/donations/admin', {
-          headers: getAuthHeaders()
-        });
-        if (!response.ok) {
-          if (response.status === 401 || response.status === 403) {
-            alert('Session expired or unauthorized. Please log in again.');
-            window.location.href = '/login.html'; // Redirect to login page
-            return;
-          }
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        donations = await response.json();
-        render();
-      } catch (error) {
-        console.error('Error fetching donations:', error);
-        alert('Failed to fetch donations. Please check console for details.');
+      // Elements
+      const form = document.getElementById('donationForm');
+      const donor = document.getElementById('donor');
+      const eventName = document.getElementById('eventName');
+      const eventDate = document.getElementById('eventDate');
+      const totalAmount = document.getElementById('totalAmount');
+      const paidAmount = document.getElementById('paidAmount');
+      const donorError = document.getElementById('donorError');
+      const eventNameError = document.getElementById('eventNameError');
+      const eventDateError = document.getElementById('eventDateError');
+      const totalAmountError = document.getElementById('totalAmountError');
+      const paidAmountError = document.getElementById('paidAmountError');
+      const editingId = document.getElementById('editingId');
+      const tbody = document.getElementById('tbody');
+      const empty = document.getElementById('empty');
+      const totalCount = document.getElementById('totalCount');
+      const pendingCount = document.getElementById('pendingCount');
+      const completedCount = document.getElementById('completedCount');
+      const totalAmountDisplay = document.getElementById('totalAmountDisplay');
+      const completedAmount = document.getElementById('completedAmount');
+      const search = document.getElementById('search');
+      const filterSel = document.getElementById('filterStatus');
+      const exportBtn = document.getElementById('exportCsv');
+      const previewModal = document.getElementById('previewModal');
+      const modalClose = document.querySelector('.modal-close');
+      const modalDonor = document.getElementById('modalDonor');
+      const modalEventName = document.getElementById('modalEventName');
+      const modalEventDate = document.getElementById('modalEventDate');
+      const modalTotalAmount = document.getElementById('modalTotalAmount');
+      const modalPaidAmount = document.getElementById('modalPaidAmount');
+      const modalPendingAmount = document.getElementById('modalPendingAmount');
+      const modalStatus = document.getElementById('modalStatus');
+      const issueDate = document.getElementById('issueDate');
+      const shareWhatsAppBtn = document.getElementById('shareWhatsAppBtn');
+
+      // Debug: Verify elements
+      console.log('Form elements:', { donor, eventName, eventDate, totalAmount, paidAmount });
+      if (!totalAmount) {
+        console.error('totalAmount input not found. Check HTML id attribute.');
+        alert('Form configuration error. Please contact support.');
+        return;
       }
-    }
 
-    function render() {
-      const q = searchText.trim().toLowerCase();
-      const view = donations.filter(d => {
-        const okStatus = filterStatus === 'all' ? true : d.status === filterStatus;
-        const okSearch = !q ? true : (d.donor.toLowerCase().includes(q) || (d.notes || '').toLowerCase().includes(q));
-        return okStatus && okSearch;
+      let donations = [];
+      let filterStatus = 'all';
+      let searchText = '';
+
+      // Initialize defaults
+      eventDate.valueAsDate = new Date();
+
+      // Modal handlers
+      function openModal(donation) {
+        modalDonor.textContent = donation.donor;
+        modalEventName.textContent = donation.eventName || 'None';
+        modalEventDate.textContent = new Date(donation.eventDate).toISOString().split('T')[0];
+        modalTotalAmount.textContent = formatCurrency(Number(donation.totalAmount));
+        modalPaidAmount.textContent = formatCurrency(Number(donation.paidAmount));
+        modalPendingAmount.textContent = formatCurrency(Number(donation.pendingAmount));
+        modalStatus.textContent = donation.status.charAt(0).toUpperCase() + donation.status.slice(1);
+        issueDate.textContent = new Date().toLocaleDateString('en-IN', { year: 'numeric', month: 'long', day: 'numeric' });
+        previewModal.style.display = 'flex';
+      }
+
+      modalClose.addEventListener('click', () => {
+        previewModal.style.display = 'none';
       });
 
-      // Stats
-      totalCount.textContent = donations.length;
-      pendingCount.textContent = donations.filter(d => d.status === 'pending').length;
-      completedCount.textContent = donations.filter(d => d.status === 'completed').length;
-      totalAmount.textContent = formatCurrency(donations.reduce((s, d) => s + Number(d.amount || 0), 0));
-      completedAmount.textContent = formatCurrency(donations.filter(d => d.status === 'completed').reduce((s, d) => s + Number(d.amount || 0), 0));
-
-      // Rows
-      tbody.innerHTML = '';
-      if (view.length === 0) {
-        empty.classList.remove('hidden');
-        return;
-      }
-      empty.classList.add('hidden');
-      for (const d of view) {
-        const tr = document.createElement('tr');
-        tr.className = 'border-t border-gray-200 hover:bg-gray-50 transition';
-        tr.innerHTML = `
-          <td class="py-4 px-4 font-medium">${escapeHtml(d.donor)}</td>
-          <td class="py-4 px-4">${formatCurrency(d.amount)}</td>
-          <td class="py-4 px-4">${escapeHtml(new Date(d.date).toISOString().split('T')[0])}</td>
-          <td class="py-4 px-4">
-            <span class="inline-block px-3 py-1 text-xs font-medium rounded-full ${d.status === 'completed' ? 'bg-[#D4AF37] text-[#5A204A]' : 'bg-[#F0E68C] text-[#5A204A]'}">
-              ${d.status.charAt(0).toUpperCase() + d.status.slice(1)}
-            </span>
-          </td>
-          <td class="py-4 px-4">${escapeHtml(d.notes || '')}</td>
-          <td class="py-4 px-4 flex gap-2">
-            <button class="px-4 py-1 bg-[#D4AF37] text-[#5A204A] rounded-lg hover:bg-[#F0E68C] transition" data-edit="${d._id}">Edit</button>
-            <button class="px-4 py-1 bg-[#F0E68C] text-[#5A204A] rounded-lg hover:bg-[#D4AF37] transition" data-del="${d._id}">Delete</button>
-          </td>
-        `;
-        tbody.appendChild(tr);
-      }
-    }
-
-    function escapeHtml(s) {
-      return String(s).replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;');
-    }
-
-    // Handlers
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const data = {
-        donor: donor.value.trim(),
-        amount: Number(amount.value),
-        date: dateEl.value,
-        status: statusEl.value,
-        notes: notes.value.trim()
-      };
-      if (!data.donor || !isFinite(data.amount) || data.amount < 0 || !data.date) {
-        alert('Please fill a valid donor, amount, and date.');
-        return;
-      }
-
-      const id = editingId.value;
-      try {
-        if (id) {
-          await fetch(`https://temple-4bpo.onrender.com/api/donations/${id}`, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
-            body: JSON.stringify(data)
-          });
-        } else {
-          await fetch('https://temple-4bpo.onrender.com/api/donations', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
-            body: JSON.stringify(data)
-          });
+      previewModal.addEventListener('click', (e) => {
+        if (e.target === previewModal) {
+          previewModal.style.display = 'none';
         }
-        resetForm();
-        fetchDonations();
-      } catch (error) {
-        console.error('Error saving donation:', error);
-        alert('Failed to save donation.');
-      }
-    });
+      });
 
-    function resetForm() {
-      form.reset();
-      editingId.value = '';
-      dateEl.valueAsDate = new Date();
-      statusEl.value = 'pending';
-    }
-    resetBtn.addEventListener('click', resetForm);
+      // Share on WhatsApp
+      async function generateImage() {
+        const modalContent = document.querySelector('.modal-content');
+        const modalCloseEl = document.querySelector('.modal-close');
+        const shareBtnEl = document.querySelector('#shareWhatsAppBtn');
 
-    tbody.addEventListener('click', async (e) => {
-      const t = e.target;
-      if (t.dataset.edit) {
-        const d = donations.find(x => x._id === t.dataset.edit);
-        if (!d) return;
-        editingId.value = d._id;
-        donor.value = d.donor;
-        amount.value = d.amount;
-        dateEl.value = new Date(d.date).toISOString().split('T')[0]; // Format date for input
-        statusEl.value = d.status;
-        notes.value = d.notes || '';
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      }
-      if (t.dataset.del) {
-        const id = t.dataset.del;
-        if (confirm('Delete this donation?')) {
-          try {
-            await fetch(`https://temple-4bpo.onrender.com/api/donations/${id}`, { method: 'DELETE', headers: getAuthHeaders() });
-            fetchDonations();
-          } catch (error) {
-            console.error('Error deleting donation:', error);
-            alert('Failed to delete donation.');
-          }
-        }
-      }
-    });
+        // Hide unwanted elements
+        modalCloseEl.style.display = 'none';
+        shareBtnEl.style.display = 'none';
 
-    search.addEventListener('input', () => { searchText = search.value; render(); });
-    filterSel.addEventListener('change', () => { filterStatus = filterSel.value; render(); });
-
-    // Export CSV (client-side for now, can be moved to backend if data size is large)
-    function toCsv(rows) {
-      if (!rows.length) return '';
-      const headers = ['_id', 'donor', 'amount', 'date', 'status', 'notes'];
-      const esc = v => `"${String(v ?? '').replace(/"/g, '""')}"`;
-      const lines = [headers.join(',')];
-      for (const r of rows) {
-        lines.push(headers.map(h => esc(r[h])).join(','));
-      }
-      return lines.join('\n');
-    }
-    function download(filename, content, mime = 'text/plain;charset=utf-8') {
-      const blob = new Blob([content], { type: mime });
-      const a = document.createElement('a');
-      a.href = URL.createObjectURL(blob);
-      a.download = filename;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      setTimeout(() => URL.revokeObjectURL(a.href), 1000);
-    }
-    exportBtn.addEventListener('click', () => {
-      if (!donations.length) { alert('No data to export'); return; }
-      const csv = toCsv(donations);
-      download('temple-donations.csv', csv, 'text/csv;charset=utf-8');
-    });
-
-    // Backup / Restore (client-side for now)
-    backupBtn.addEventListener('click', () => {
-      download('temple-donations-backup.json', JSON.stringify(donations, null, 2), 'application/json');
-    });
-
-    clearBtn.addEventListener('click', async () => {
-      if (confirm('This will remove all donation records. Proceed?')) {
         try {
-          await fetch('https://temple-4bpo.onrender.com/api/donations/clear', { method: 'POST' }); // New endpoint for clearing all
+          const canvas = await html2canvas(modalContent, {
+            scale: 2, // High-resolution output
+            useCORS: true, // Handle external images
+            backgroundColor: null // Preserve gradient background
+          });
+
+          // Restore hidden elements
+          modalCloseEl.style.display = 'block';
+          shareBtnEl.style.display = 'flex';
+
+          return canvas.toDataURL('image/png', 1.0); // HD PNG
+        } catch (error) {
+          // Restore elements in case of error
+          modalCloseEl.style.display = 'block';
+          shareBtnEl.style.display = 'flex';
+          console.error('Error generating image:', error);
+          throw new Error('Failed to generate receipt image.');
+        }
+      }
+
+      shareWhatsAppBtn.addEventListener('click', async () => {
+        try {
+          const imageDataUri = await generateImage();
+          const imageBlob = await fetch(imageDataUri).then(res => res.blob());
+          const file = new File([imageBlob], `donation-receipt.png`, { type: 'image/png' });
+
+          if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+            // Use Web Share API for mobile devices
+            await navigator.share({
+              files: [file],
+              title: 'Donation Receipt - श्री शांतिनाथ दिगम्बर जैन मंदिर',
+              text: `Thank you for your donation! Here is your receipt from श्री शांतिनाथ दिगम्बर जैन मंदिर.`
+            });
+          } else {
+            // Fallback: Download image and open WhatsApp URL
+            const message = encodeURIComponent(`Thank you for your donation! Here is your receipt from श्री शांतिनाथ दिगम्बर जैन मंदिर.`);
+            const whatsappUrl = `https://wa.me/?text=${message}`;
+            window.open(whatsappUrl, '_blank');
+            alert('Please manually attach the downloaded image in WhatsApp.');
+            const link = document.createElement('a');
+            link.href = imageDataUri;
+            link.download = `donation-receipt.png`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+          }
+        } catch (error) {
+          console.error('Error sharing image:', error);
+          alert('Failed to share receipt: ' + error.message);
+        }
+      });
+
+      // Fetch and Render
+      function getAuthHeaders() {
+        const token = localStorage.getItem('token');
+        return token ? { 'Authorization': `Bearer ${token}` } : {};
+      }
+
+      async function fetchDonations() {
+        try {
+          const response = await fetch('http://localhost:3000/api/donations/admin', {
+            headers: getAuthHeaders()
+          });
+          if (!response.ok) {
+            if (response.status === 401 || response.status === 403) {
+              alert('Session expired or unauthorized. Please log in again.');
+              window.location.href = '/login.html';
+              return;
+            }
+            const errorText = await response.text();
+            throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
+          }
+          donations = await response.json();
+          console.log('Fetched donations:', donations);
+          render();
+        } catch (error) {
+          console.error('Error fetching donations:', error);
+          alert('Failed to fetch donations: ' + error.message);
+        }
+      }
+
+      function render() {
+        const q = searchText.trim().toLowerCase();
+        const view = donations.filter(d => {
+          const okStatus = filterStatus === 'all' ? true : d.status === filterStatus;
+          const okSearch = !q ? true : (d.donor.toLowerCase().includes(q) || (d.eventName || '').toLowerCase().includes(q));
+          return okStatus && okSearch;
+        });
+
+        totalCount.textContent = donations.length;
+        pendingCount.textContent = donations.filter(d => d.status === 'pending').length;
+        completedCount.textContent = donations.filter(d => d.status === 'completed').length;
+        totalAmountDisplay.textContent = formatCurrency(donations.reduce((s, d) => s + Number(d.totalAmount || 0), 0));
+        completedAmount.textContent = formatCurrency(donations.filter(d => d.status === 'completed').reduce((s, d) => s + Number(d.paidAmount || 0), 0));
+
+        tbody.innerHTML = '';
+        if (view.length === 0) {
+          empty.classList.remove('hidden');
+          return;
+        }
+        empty.classList.add('hidden');
+        for (const d of view) {
+          const tr = document.createElement('tr');
+          tr.className = 'border-t border-gray-200 hover:bg-gray-50 transition';
+          tr.innerHTML = `
+            <td class="py-4 px-4 font-medium">${escapeHtml(d.donor)}</td>
+            <td class="py-4 px-4">${escapeHtml(new Date(d.eventDate).toISOString().split('T')[0])}</td>
+            <td class="py-4 px-4">
+              <span class="inline-block px-3 py-1 text-xs font-medium rounded-full ${d.status === 'completed' ? 'bg-[#D4AF37] text-[#5A204A]' : 'bg-[#F0E68C] text-[#5A204A]'}">
+                ${d.status.charAt(0).toUpperCase() + d.status.slice(1)}
+              </span>
+            </td>
+            <td class="py-4 px-4 flex gap-2">
+              <button class="px-4 py-1 bg-[#D4AF37] text-[#5A204A] rounded-lg hover:bg-[#F0E68C] transition" data-edit="${d._id}">Edit</button>
+              <button class="px-2 py-1 text-[#5A204A] rounded-lg hover:text-[#4A1A3D] transition" data-preview="${d._id}">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                </svg>
+              </button>
+            </td>
+          `;
+          tbody.appendChild(tr);
+        }
+      }
+
+      function escapeHtml(s) {
+        return String(s).replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;');
+      }
+
+      // Form validation
+      function clearErrors() {
+        donorError.classList.add('hidden');
+        eventNameError.classList.add('hidden');
+        eventDateError.classList.add('hidden');
+        totalAmountError.classList.add('hidden');
+        paidAmountError.classList.add('hidden');
+      }
+
+      // Real-time validation
+      totalAmount.addEventListener('input', () => {
+        const value = totalAmount.value;
+        totalAmountError.textContent = !value ? 'Total amount is required.' : Number(value) < 0 ? 'Total amount must be ≥ 0.' : '';
+        totalAmountError.classList.toggle('hidden', !totalAmountError.textContent);
+        validatePaidAmount();
+      });
+
+      paidAmount.addEventListener('input', validatePaidAmount);
+
+      function validatePaidAmount() {
+        const total = Number(totalAmount.value);
+        const paid = Number(paidAmount.value);
+        paidAmountError.textContent = !paidAmount.value ? 'Paid amount is required.' : paid < 0 ? 'Paid amount must be ≥ 0.' : isFinite(total) && paid > total ? 'Paid amount cannot exceed total amount.' : '';
+        paidAmountError.classList.toggle('hidden', !paidAmountError.textContent);
+      }
+
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        clearErrors();
+
+        const data = {
+          donor: donor.value ? donor.value.trim() : '',
+          eventName: eventName.value ? eventName.value.trim() : '',
+          eventDate: eventDate.value,
+          totalAmount: Number(totalAmount.value),
+          paidAmount: Number(paidAmount.value)
+        };
+
+        console.log('Raw input values:', {
+          donor: donor.value,
+          eventName: eventName.value,
+          eventDate: eventDate.value,
+          totalAmount: totalAmount.value,
+          paidAmount: paidAmount.value
+        });
+        console.log('Processed form data:', data);
+
+        let hasError = false;
+        if (!data.donor) {
+          donorError.classList.remove('hidden');
+          hasError = true;
+        }
+        if (!data.eventName) {
+          eventNameError.classList.remove('hidden');
+          hasError = true;
+        }
+        if (!data.eventDate || isNaN(new Date(data.eventDate).getTime())) {
+          eventDateError.classList.remove('hidden');
+          hasError = true;
+        }
+        if (!totalAmount.value || isNaN(data.totalAmount) || data.totalAmount < 0) {
+          totalAmountError.textContent = !totalAmount.value ? 'Total amount is required.' : 'Total amount must be ≥ 0.';
+          totalAmountError.classList.remove('hidden');
+          hasError = true;
+        }
+        if (!paidAmount.value || isNaN(data.paidAmount) || data.paidAmount < 0) {
+          paidAmountError.textContent = !paidAmount.value ? 'Paid amount is required.' : 'Paid amount must be ≥ 0.';
+          paidAmountError.classList.remove('hidden');
+          hasError = true;
+        }
+        if (isFinite(data.totalAmount) && isFinite(data.paidAmount) && data.paidAmount > data.totalAmount) {
+          paidAmountError.textContent = 'Paid amount cannot exceed total amount.';
+          paidAmountError.classList.remove('hidden');
+          hasError = true;
+        }
+
+        if (hasError) {
+          alert('Please fix the errors in the form.');
+          return;
+        }
+
+        const id = editingId.value;
+        try {
+          const url = id ? `http://localhost:3000/api/donations/${id}` : 'http://localhost:3000/api/donations';
+          const method = id ? 'PUT' : 'POST';
+          const response = await fetch(url, {
+            method,
+            headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
+            body: JSON.stringify(data)
+          });
+          if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
+          }
+          resetForm();
           fetchDonations();
         } catch (error) {
-          console.error('Error clearing all donations:', error);
-          alert('Failed to clear all donations.');
+          console.error('Error saving donation:', error);
+          alert('Failed to save donation: ' + error.message);
         }
-      }
-    });
+      });
 
-    // Initial fetch
-    fetchDonations();
+      function resetForm() {
+        form.reset();
+        editingId.value = '';
+        eventDate.valueAsDate = new Date();
+        clearErrors();
+      }
+      resetBtn.addEventListener('click', resetForm);
+
+      tbody.addEventListener('click', (e) => {
+        const t = e.target.closest('button');
+        if (!t) return;
+        if (t.dataset.edit) {
+          const d = donations.find(x => x._id === t.dataset.edit);
+          if (!d) return;
+          editingId.value = d._id;
+          donor.value = d.donor;
+          eventName.value = d.eventName;
+          eventDate.value = new Date(d.eventDate).toISOString().split('T')[0];
+          totalAmount.value = d.totalAmount;
+          paidAmount.value = d.paidAmount;
+          clearErrors();
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+        if (t.dataset.preview) {
+          const d = donations.find(x => x._id === t.dataset.preview);
+          if (d) openModal(d);
+        }
+      });
+
+      search.addEventListener('input', () => {
+        searchText = search.value;
+        render();
+      });
+
+      filterSel.addEventListener('change', () => {
+        filterStatus = filterSel.value;
+        render();
+      });
+
+      // Export CSV
+      function toCsv(rows) {
+        if (!rows.length) return '';
+        const headers = ['_id', 'donor', 'eventName', 'eventDate', 'totalAmount', 'paidAmount', 'pendingAmount', 'status'];
+        const esc = v => `"${String(v ?? '').replace(/"/g, '""')}"`;
+        const lines = [headers.join(',')];
+        for (const r of rows) {
+          lines.push(headers.map(h => esc(h === 'eventDate' ? new Date(r[h]).toISOString().split('T')[0] : r[h])).join(','));
+        }
+        return lines.join('\n');
+      }
+
+      function download(filename, content, mime = 'text/plain;charset=utf-8') {
+        const blob = new Blob([content], { type: mime });
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+      }
+
+      exportBtn.addEventListener('click', () => {
+        if (!donations.length) {
+          alert('No data to export');
+          return;
+        }
+        const csv = toCsv(donations);
+        download('temple-donations.csv', csv, 'text/csv;charset=utf-8');
+      });
+
+      // Initial fetch
+      fetchDonations();
+    });
   </script>
+   <footer class="bg-[#5A204A] text-white text-center p-4 mt-[150px]">
+    <p>&copy; 2025 श्री शांतिनाथ दिगम्बर जैन मंदिर. All rights reserved.</p>
+    <!-- <p>Contact: +91 9876543210</p> -->
+  </footer>
 </body>
 </html>

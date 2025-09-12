@@ -3,8 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>श्री महावीराय नमः</title>
+  <title>श्री शांतिनाथ दिगम्बर जैन मंदिर</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
   <style>
@@ -53,6 +54,322 @@
       text-transform: uppercase;
       letter-spacing: 0.05em;
     }
+    /* Modal styles from admin.html */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 50;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0, 0, 0, 0.6);
+      align-items: center;
+      justify-content: center;
+      animation: fadeIn 0.3s ease-in-out;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    .modal-content {
+      background: linear-gradient(145deg, #ffffff, #f9f9f9);
+      margin: 1.5rem auto;
+      padding: 1rem 0.5rem;
+      border-radius: 0.75rem;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+      width: 95%;
+      max-width: 480px;
+      min-width: 280px;
+      position: relative;
+      border: 2px solid #D4AF37;
+      animation: slideUp 0.3s ease-in-out;
+    }
+    @keyframes slideUp {
+      from { transform: translateY(20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+    .modal-close {
+      position: absolute;
+      top: 0.5rem;
+      right: 0.5rem;
+      font-size: 1.25rem;
+      font-weight: bold;
+      color: #5A204A;
+      cursor: pointer;
+      transition: color 0.2s, transform 0.2s;
+      line-height: 1;
+    }
+    .modal-close:hover {
+      color: #D4AF37;
+      transform: scale(1.1);
+    }
+    #shareWhatsAppBtn {
+      position: absolute;
+      top: 0.5rem;
+      right: 2.5rem;
+      width: 2rem;
+      height: 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: #5A204A;
+      border-radius: 50%;
+      cursor: pointer;
+      transition: background-color 0.2s, transform 0.2s;
+    }
+    #shareWhatsAppBtn:hover {
+      background-color: #4A1A3D;
+      transform: scale(1.1);
+    }
+    #shareWhatsAppBtn .share-icon {
+      width: 1.25rem;
+      height: 1.25rem;
+      object-fit: contain;
+      filter: brightness(0) invert(1); /* Ensures white color for icon */
+    }
+    .modal-header {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+      padding-bottom: 0.75rem;
+      border-bottom: 2px solid #D4AF37;
+      margin-bottom: 0.75rem;
+      gap: 0.5rem;
+      max-width: 90%;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .modal-header .logo-placeholder {
+      width: 2.5rem;
+      height: auto;
+      object-fit: contain;
+    }
+    .modal-header .center-text-wrapper {
+      display: flex;
+      justify-content: center;
+      flex: 1;
+    }
+    .modal-header .text-container {
+      display: flex;
+      flex-direction: column;
+      text-align: center;
+      max-width: 80%;
+    }
+    .modal-header .spacer {
+      width: 2.5rem; /* Matches logo width for balance */
+    }
+    .modal-header h2 {
+      font-size: clamp(1.1rem, 4.5vw, 1.25rem);
+      font-weight: 700;
+      color: #5A204A;
+      margin: 0;
+      line-height: 1.2;
+    }
+    .modal-header p {
+      font-size: clamp(0.7rem, 2.8vw, 0.8rem);
+      color: #64748b;
+      margin: 0.2rem 0 0;
+    }
+    .modal-details {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.5rem;
+      padding: 0.75rem 0;
+      max-width: 90%;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .modal-details p {
+      margin: 0;
+      font-size: clamp(0.75rem, 3.2vw, 0.85rem);
+      color: #1e293b;
+      display: flex;
+      flex-direction: column;
+    }
+    .modal-details p span:first-child {
+      font-weight: 600;
+      color: #5A204A;
+      font-size: clamp(0.65rem, 2.8vw, 0.75rem);
+    }
+    .modal-details p span:last-child {
+      color: #1e293b;
+      font-weight: 400;
+    }
+    .modal-footer {
+      text-align: center;
+      margin-top: 0.75rem;
+      padding-top: 0.75rem;
+      border-top: 1px solid #e5e7eb;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      max-width: 90%;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .modal-footer p {
+      font-size: clamp(0.65rem, 2.8vw, 0.75rem);
+      color: #64748b;
+      margin: 0;
+    }
+    @media (max-width: 640px) {
+      .modal-content {
+        padding: 0.75rem 0.5rem;
+        margin: 1rem auto;
+        border-radius: 0.5rem;
+      }
+      .modal-close {
+        top: 0.4rem;
+        right: 0.4rem;
+        font-size: 1rem;
+      }
+      #shareWhatsAppBtn {
+        top: 0.4rem;
+        right: 2rem;
+        width: 1.75rem;
+        height: 1.75rem;
+      }
+      #shareWhatsAppBtn .share-icon {
+        width: 1rem;
+        height: 1rem;
+      }
+      .modal-header {
+        gap: 0.4rem;
+        padding-bottom: 0.5rem;
+        margin-bottom: 0.5rem;
+        max-width: 95%;
+      }
+      .modal-header .logo-placeholder {
+        width: 2rem;
+      }
+      .modal-header .spacer {
+        width: 2rem;
+      }
+      .modal-details {
+        gap: 0.4rem;
+        padding: 0.5rem 0;
+        max-width: 95%;
+      }
+      .modal-details p {
+        font-size: clamp(0.7rem, 3vw, 0.8rem);
+      }
+      .modal-details p span:first-child {
+        font-size: clamp(0.6rem, 2.5vw, 0.7rem);
+      }
+      .modal-footer {
+        margin-top: 0.5rem;
+        padding-top: 0.5rem;
+        max-width: 95%;
+      }
+      .modal-footer p {
+        font-size: clamp(0.6rem, 2.5vw, 0.7rem);
+      }
+    }
+    @media (max-width: 480px) {
+      .modal-content {
+        min-width: 90%;
+        padding: 0.5rem 0.25rem;
+      }
+      .modal-close {
+        top: 0.4rem;
+        right: 0.4rem;
+        font-size: 0.875rem;
+      }
+      #shareWhatsAppBtn {
+        right: 1.75rem;
+        width: 1.5rem;
+        height: 1.5rem;
+      }
+      #shareWhatsAppBtn .share-icon {
+        width: 0.875rem;
+        height: 0.875rem;
+      }
+      .modal-header {
+        max-width: 95%;
+      }
+      .modal-header .logo-placeholder {
+        width: 1.75rem;
+      }
+      .modal-header .spacer {
+        width: 1.75rem;
+      }
+      .modal-header h2 {
+        font-size: clamp(1rem, 4vw, 1.15rem);
+      }
+      .modal-header p {
+        font-size: clamp(0.6rem, 2.5vw, 0.7rem);
+      }
+      .modal-details {
+        max-width: 95%;
+      }
+      .modal-details p {
+        font-size: clamp(0.65rem, 2.8vw, 0.75rem);
+      }
+      .modal-details p span:first-child {
+        font-size: clamp(0.55rem, 2.3vw, 0.65rem);
+      }
+      .modal-footer {
+        max-width: 95%;
+      }
+    }
+    /* Additional table styles from admin.html */
+    .border-gray-200 {
+      border-color: #e5e7eb;
+    }
+    .text-sm {
+      font-size: 0.875rem;
+      line-height: 1.25rem;
+    }
+    .text-gray-600 {
+      color: #4b5563;
+    }
+    .py-4 {
+      padding-top: 1rem;
+      padding-bottom: 1rem;
+    }
+    .px-4 {
+      padding-left: 1rem;
+      padding-right: 1rem;
+    }
+    .text-left {
+      text-align: left;
+    }
+    .font-medium {
+      font-weight: 500;
+    }
+    .border-t {
+      border-top-width: 1px;
+    }
+    .hover\:bg-gray-50:hover {
+      background-color: #f9fafb;
+    }
+    .px-2 {
+      padding-left: 0.5rem;
+      padding-right: 0.5rem;
+    }
+    .py-1 {
+      padding-top: 0.25rem;
+      padding-bottom: 0.25rem;
+    }
+    .rounded-full {
+      border-radius: 9999px;
+    }
+  
+    .h-5 {
+      height: 1.25rem;
+    }
+    .w-5 {
+      width: 1.25rem;
+    }
+    .flex {
+      display: flex;
+    }
+    .gap-2 {
+      gap: 0.5rem;
+    }
   </style>
 </head>
 <body class="bg-[#FDFDFD] font-['Inter'] text-gray-900 antialiased">
@@ -60,7 +377,7 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
       <div class="flex items-center gap-3">
         <img src="logo2.png" alt="Jain Logo" class="h-10 w-auto">
-       <a href="index.html" class="text-white hover:text-gray-300"><h1 class="text-2xl font-semibold">श्री महावीराय नमः</h1></a> 
+        <a href="index.html" class="text-white hover:text-gray-300"><h1 class="text-2xl font-semibold">श्री शांतिनाथ दिगम्बर जैन मंदिर</h1></a> 
       </div>
       <nav>
         <a href="/admin.html" class="text-white hover:text-gray-300">Admin Access</a>
@@ -96,95 +413,294 @@
         </div>
       </div>
 
+      <!-- Filters and Search -->
+      <div class="mb-6 flex flex-col sm:flex-row gap-4 items-center justify-between flex-wrap">
+        <div class="flex flex-col sm:flex-row gap-3 items-center w-full sm:w-auto">
+          <input id="search" type="search" placeholder="Search donor or event..." class="w-full sm:w-64 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#5A204A] bg-white text-gray-900 transition" />
+          <select id="filterStatus" class="w-full sm:w-auto px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#5A204A] bg-white text-gray-900">
+            <option value="all">All Statuses</option>
+            <option value="completed">Completed</option>
+            <option value="pending">Pending</option>
+          </select>
+        </div>
+      </div>
+
       <!-- Table with no scrollbar -->
-      <div class="overflow-x-auto no-scrollbar">
-        <table id="donationsTable" class="min-w-full bg-white border border-gray-200">
+      <div class="overflow-x-auto no-scrollbar border border-gray-200 rounded-lg">
+        <table id="donationsTable" class="min-w-full bg-white">
           <thead>
-            <tr>
-              <th class="py-3 px-4 bg-gray-100 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Donor Name</th>
-              <th class="py-3 px-4 bg-gray-100 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
-              <th class="py-3 px-4 bg-gray-100 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
-              <th class="py-3 px-4 bg-gray-100 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+            <tr class="text-sm text-gray-600">
+              <th class="py-4 px-4 text-left font-medium">Donor</th>
+              <th class="py-4 px-4 text-left font-medium">Event Date</th>
+              <th class="py-4 px-4 text-left font-medium">Status</th>
+              <th class="py-4 px-4 text-left font-medium">Actions</th>
             </tr>
           </thead>
-          <tbody>
-            <!-- Donation details will be loaded here -->
-          </tbody>
+          <tbody id="tbody"></tbody>
         </table>
+        <div id="empty" class="hidden text-center py-8 text-gray-500 bg-white">No donations yet.</div>
+      </div>
+
+      <!-- Preview Modal -->
+      <div id="previewModal" class="modal">
+        <div class="modal-content">
+          <span class="modal-close">&times;</span>
+          <button id="shareWhatsAppBtn">
+            <img src="share.png" alt="Share Icon" class="share-icon">
+          </button>
+          <div class="modal-header">
+            <img src="logo2.png" alt="Jain Logo" class="logo-placeholder">
+            <div class="center-text-wrapper">
+              <div class="text-container">
+                <h2>श्री शांतिनाथ दिगम्बर जैन मंदिर</h2>
+                <p>दान रसीद</p>
+              </div>
+            </div>
+            <div class="spacer"></div>
+          </div>
+          <div class="modal-details">
+            <p><span>Donor Name</span><span id="modalDonor"></span></p>
+            <p><span>Event Name</span><span id="modalEventName"></span></p>
+            <p><span>Event Date</span><span id="modalEventDate"></span></p>
+            <p><span>Total Amount</span><span id="modalTotalAmount"></span></p>
+            <p><span>Paid Amount</span><span id="modalPaidAmount"></span></p>
+            <p><span>Pending Amount</span><span id="modalPendingAmount"></span></p>
+            <p><span>Status</span><span id="modalStatus"></span></p>
+          </div>
+          <div class="modal-footer">
+            <p>Thank you for your support.</p>
+            <p>Issued on: <span id="issueDate"></span></p>
+          </div>
+        </div>
       </div>
     </div>
-
-    <script>
-      function formatCurrency(n) {
-        const amount = Number(n || 0);
-        return new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 2 }).format(amount);
-      }
-
-      document.addEventListener('DOMContentLoaded', () => {
-        // Fetch summary data
-        fetch('https://temple-4bpo.onrender.com/api/donations/summary', {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json'
-          }
-        })
-        .then(response => {
-          if (!response.ok) {
-            throw new Error('Network response was not ok');
-          }
-          return response.json();
-        })
-        .then(summaryData => {
-          console.log('Summary Data:', summaryData);
-          document.getElementById('totalRecords').textContent = summaryData.totalRecords || 0;
-          document.getElementById('pendingCount').textContent = summaryData.pendingCount || 0;
-          document.getElementById('completedCount').textContent = summaryData.completedCount || 0;
-          document.getElementById('totalAmount').textContent = formatCurrency(summaryData.totalAmount || 0);
-          document.getElementById('completedAmount').textContent = formatCurrency(summaryData.completedAmount || 0);
-        })
-        .catch(error => {
-          console.error('Error fetching summary details:', error);
-          alert('Failed to load summary details. Please try again later.');
-        });
-
-        // Fetch donation details
-        fetch('https://temple-4bpo.onrender.com/api/donations', {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json'
-          }
-        })
-        .then(response => {
-          if (!response.ok) {
-            throw new Error('Network response was not ok');
-          }
-          return response.json();
-        })
-        .then(data => {
-          const tableBody = document.getElementById('donationsTable').getElementsByTagName('tbody')[0];
-          data.forEach(donation => {
-            const row = tableBody.insertRow();
-            row.insertCell().textContent = donation.donor;
-            row.insertCell().textContent = donation.amount;
-            row.insertCell().textContent = new Date(donation.date).toLocaleDateString();
-            row.insertCell().textContent = donation.status;
-          });
-        })
-        .catch(error => {
-          console.error('Error fetching donation details:', error);
-          alert('Failed to load donation details. Please try again later.');
-        });
-      });
-    </script>
   </main>
 
   <footer class="bg-[#5A204A] text-white text-center p-4 mt-[150px]">
-    <p>&copy; 2025 श्री महावीराय नमः. All rights reserved.</p>
-    <!-- <p>Contact: +91 9876543210</p> -->
+    <p>&copy; 2025 श्री शांतिनाथ दिगम्बर जैन मंदिर. All rights reserved.</p>
   </footer>
+
   <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
   <script>
     AOS.init();
+
+    function formatCurrency(n) {
+      const amount = Number(n || 0);
+      return new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 2 }).format(amount);
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      // Elements
+      const tbody = document.getElementById('tbody');
+      const empty = document.getElementById('empty');
+      const totalRecords = document.getElementById('totalRecords');
+      const pendingCount = document.getElementById('pendingCount');
+      const completedCount = document.getElementById('completedCount');
+      const totalAmount = document.getElementById('totalAmount');
+      const completedAmount = document.getElementById('completedAmount');
+      const search = document.getElementById('search');
+      const filterStatus = document.getElementById('filterStatus');
+      const previewModal = document.getElementById('previewModal');
+      const modalClose = document.querySelector('.modal-close');
+      const modalDonor = document.getElementById('modalDonor');
+      const modalEventName = document.getElementById('modalEventName');
+      const modalEventDate = document.getElementById('modalEventDate');
+      const modalTotalAmount = document.getElementById('modalTotalAmount');
+      const modalPaidAmount = document.getElementById('modalPaidAmount');
+      const modalPendingAmount = document.getElementById('modalPendingAmount');
+      const modalStatus = document.getElementById('modalStatus');
+      const issueDate = document.getElementById('issueDate');
+      const shareWhatsAppBtn = document.getElementById('shareWhatsAppBtn');
+
+      let donations = [];
+      let filterValue = 'all';
+      let searchText = '';
+
+      // Modal handlers
+      function openModal(donation) {
+        modalDonor.textContent = donation.donor;
+        modalEventName.textContent = donation.eventName || 'None';
+        modalEventDate.textContent = new Date(donation.eventDate).toISOString().split('T')[0];
+        modalTotalAmount.textContent = formatCurrency(Number(donation.totalAmount));
+        modalPaidAmount.textContent = formatCurrency(Number(donation.paidAmount));
+        modalPendingAmount.textContent = formatCurrency(Number(donation.pendingAmount));
+        modalStatus.textContent = donation.status.charAt(0).toUpperCase() + donation.status.slice(1);
+        issueDate.textContent = new Date().toLocaleDateString('en-IN', { year: 'numeric', month: 'long', day: 'numeric' });
+        previewModal.style.display = 'flex';
+      }
+
+      modalClose.addEventListener('click', () => {
+        previewModal.style.display = 'none';
+      });
+
+      previewModal.addEventListener('click', (e) => {
+        if (e.target === previewModal) {
+          previewModal.style.display = 'none';
+        }
+      });
+
+      // Share on WhatsApp
+      async function generateImage() {
+        const modalContent = document.querySelector('.modal-content');
+        const modalCloseEl = document.querySelector('.modal-close');
+        const shareBtnEl = document.querySelector('#shareWhatsAppBtn');
+
+        modalCloseEl.style.display = 'none';
+        shareBtnEl.style.display = 'none';
+
+        try {
+          const canvas = await html2canvas(modalContent, {
+            scale: 2,
+            useCORS: true,
+            backgroundColor: null
+          });
+
+          modalCloseEl.style.display = 'block';
+          shareBtnEl.style.display = 'flex';
+
+          return canvas.toDataURL('image/png', 1.0);
+        } catch (error) {
+          modalCloseEl.style.display = 'block';
+          shareBtnEl.style.display = 'flex';
+          console.error('Error generating image:', error);
+          throw new Error('Failed to generate receipt image.');
+        }
+      }
+
+      shareWhatsAppBtn.addEventListener('click', async () => {
+        try {
+          const imageDataUri = await generateImage();
+          const imageBlob = await fetch(imageDataUri).then(res => res.blob());
+          const file = new File([imageBlob], `donation-receipt.png`, { type: 'image/png' });
+
+          if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+            await navigator.share({
+              files: [file],
+              title: 'Donation Receipt - श्री शांतिनाथ दिगम्बर जैन मंदिर',
+              text: `Thank you for your donation! Here is your receipt from श्री शांतिनाथ दिगम्बर जैन मंदिर.`
+            });
+          } else {
+            const message = encodeURIComponent(`Thank you for your donation! Here is your receipt from श्री शांतिनाथ दिगम्बर जैन मंदिर.`);
+            const whatsappUrl = `https://wa.me/?text=${message}`;
+            window.open(whatsappUrl, '_blank');
+            alert('Please manually attach the downloaded image in WhatsApp.');
+            const link = document.createElement('a');
+            link.href = imageDataUri;
+            link.download = `donation-receipt.png`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+          }
+        } catch (error) {
+          console.error('Error sharing image:', error);
+          alert('Failed to share receipt: ' + error.message);
+        }
+      });
+
+      // Fetch and Render
+      async function fetchDonations() {
+        try {
+          const response = await fetch('http://localhost:3000/api/donations', {
+            headers: { 'Content-Type': 'application/json' }
+          });
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          donations = await response.json();
+          console.log('Fetched donations:', donations);
+          render();
+        } catch (error) {
+          console.error('Error fetching donations:', error);
+          alert('Failed to load donation details. Please try again later.');
+        }
+      }
+
+      async function fetchSummary() {
+        try {
+          const response = await fetch('http://localhost:3000/api/donations/summary', {
+            headers: { 'Content-Type': 'application/json' }
+          });
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          const summaryData = await response.json();
+          console.log('Summary Data:', summaryData);
+          totalRecords.textContent = summaryData.totalRecords || 0;
+          pendingCount.textContent = summaryData.pendingCount || 0;
+          completedCount.textContent = summaryData.completedCount || 0;
+          totalAmount.textContent = formatCurrency(summaryData.totalAmount || 0);
+          completedAmount.textContent = formatCurrency(summaryData.completedAmount || 0);
+        } catch (error) {
+          console.error('Error fetching summary details:', error);
+          alert('Failed to load summary details. Please try again later.');
+        }
+      }
+
+      function render() {
+        const q = searchText.trim().toLowerCase();
+        const view = donations.filter(d => {
+          const okStatus = filterValue === 'all' ? true : d.status === filterValue;
+          const okSearch = !q ? true : (d.donor.toLowerCase().includes(q) || (d.eventName || '').toLowerCase().includes(q));
+          return okStatus && okSearch;
+        });
+
+        tbody.innerHTML = '';
+        if (view.length === 0) {
+          empty.classList.remove('hidden');
+          return;
+        }
+        empty.classList.add('hidden');
+        for (const d of view) {
+          const tr = document.createElement('tr');
+          tr.className = 'border-t border-gray-200 hover:bg-gray-50 transition';
+          tr.innerHTML = `
+            <td class="py-4 px-4 font-medium">${escapeHtml(d.donor)}</td>
+            <td class="py-4 px-4">${escapeHtml(new Date(d.eventDate).toISOString().split('T')[0])}</td>
+            <td class="py-4 px-4">
+              <span class="inline-block px-3 py-1 text-xs font-medium rounded-full ${d.status === 'completed' ? 'bg-[#D4AF37] text-[#5A204A]' : 'bg-[#F0E68C] text-[#5A204A]'}">
+                ${d.status.charAt(0).toUpperCase() + d.status.slice(1)}
+              </span>
+            </td>
+            <td class="py-4 px-4 flex gap-2">
+              <button class="px-2 py-1 text-[#5A204A] rounded-lg hover:text-[#4A1A3D] transition" data-preview="${d._id}">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                </svg>
+              </button>
+            </td>
+          `;
+          tbody.appendChild(tr);
+        }
+      }
+
+      function escapeHtml(s) {
+        return String(s).replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;');
+      }
+
+      tbody.addEventListener('click', (e) => {
+        const t = e.target.closest('button');
+        if (!t) return;
+        if (t.dataset.preview) {
+          const d = donations.find(x => x._id === t.dataset.preview);
+          if (d) openModal(d);
+        }
+      });
+
+      search.addEventListener('input', () => {
+        searchText = search.value;
+        render();
+      });
+
+      filterStatus.addEventListener('change', () => {
+        filterValue = filterStatus.value;
+        render();
+      });
+
+      // Initial fetch
+      fetchDonations();
+      fetchSummary();
+    });
   </script>
 </body>
 </html>
