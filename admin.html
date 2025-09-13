@@ -718,7 +718,6 @@
     <div class="tabs mb-6 flex gap-2">
       <button id="donationsTab" class="px-6 py-2 rounded-t-lg active">Donations</button>
       <button id="expensesTab" class="px-6 py-2 rounded-t-lg">Expenses</button>
-      <button id="summaryTab" class="px-6 py-2 rounded-t-lg">Summary</button>
     </div>
 
     <div id="donationsContent">
@@ -913,39 +912,6 @@
       </div>
     </div>
 
-    <div id="summaryContent" class="hidden">
-      <div class="mb-8 grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div class="stats-card">
-          <div class="value" id="sumTotalDonations">₹0.00</div>
-          <div class="label">Total Pledged Donations</div>
-        </div>
-        <div class="stats-card">
-          <div class="value" id="sumReceivedDonations">₹0.00</div>
-          <div class="label">Total Received Donations</div>
-        </div>
-        <div class="stats-card">
-          <div class="value" id="sumTotalExpenses">₹0.00</div>
-          <div class="label">Total Committed Expenses</div>
-        </div>
-        <div class="stats-card">
-          <div class="value" id="sumPaidExpenses">₹0.00</div>
-          <div class="label">Total Paid Expenses</div>
-        </div>
-        <div class="stats-card">
-          <div class="value" id="sumNetBalance">₹0.00</div>
-          <div class="label">Net Balance (Received - Paid)</div>
-        </div>
-        <div class="stats-card">
-          <div class="value" id="sumPendingDonations">₹0.00</div>
-          <div class="label">Pending Donations</div>
-        </div>
-        <div class="stats-card">
-          <div class="value" id="sumPendingExpenses">₹0.00</div>
-          <div class="label">Pending Expenses</div>
-        </div>
-      </div>
-    </div>
-
     <div id="previewModal" class="modal">
       <div class="modal-content">
         <span class="modal-close">&times;</span>
@@ -991,26 +957,19 @@
 
       const donationsTab = document.getElementById('donationsTab');
       const expensesTab = document.getElementById('expensesTab');
-      const summaryTab = document.getElementById('summaryTab');
       const donationsContent = document.getElementById('donationsContent');
       const expensesContent = document.getElementById('expensesContent');
-      const summaryContent = document.getElementById('summaryContent');
 
       function switchTab(tab) {
-        [donationsTab, expensesTab, summaryTab].forEach(t => t.classList.remove('active'));
-        [donationsContent, expensesContent, summaryContent].forEach(c => c.classList.add('hidden'));
+        [donationsTab, expensesTab].forEach(t => t.classList.remove('active'));
+        [donationsContent, expensesContent].forEach(c => c.classList.add('hidden'));
         tab.classList.add('active');
         if (tab === donationsTab) donationsContent.classList.remove('hidden');
         if (tab === expensesTab) expensesContent.classList.remove('hidden');
-        if (tab === summaryTab) {
-          summaryContent.classList.remove('hidden');
-          updateSummary();
-        }
       }
 
       donationsTab.addEventListener('click', () => switchTab(donationsTab));
       expensesTab.addEventListener('click', () => switchTab(expensesTab));
-      summaryTab.addEventListener('click', () => switchTab(summaryTab));
 
       // Donations variables
       const donForm = document.getElementById('donationForm');
@@ -1078,15 +1037,6 @@
       const issueDate = document.getElementById('issueDate');
       const shareWhatsAppBtn = document.getElementById('shareWhatsAppBtn');
       const headerNav = document.getElementById('headerNav');
-
-      // Summary elements
-      const sumTotalDonations = document.getElementById('sumTotalDonations');
-      const sumReceivedDonations = document.getElementById('sumReceivedDonations');
-      const sumTotalExpenses = document.getElementById('sumTotalExpenses');
-      const sumPaidExpenses = document.getElementById('sumPaidExpenses');
-      const sumNetBalance = document.getElementById('sumNetBalance');
-      const sumPendingDonations = document.getElementById('sumPendingDonations');
-      const sumPendingExpenses = document.getElementById('sumPendingExpenses');
 
       let donations = [];
       let expenses = [];
@@ -1364,24 +1314,6 @@
           `;
           expTbody.appendChild(tr);
         }
-      }
-
-      function updateSummary() {
-        const totalDon = donations.reduce((s, d) => s + Number(d.totalAmount || 0), 0);
-        const receivedDon = donations.reduce((s, d) => s + Number(d.paidAmount || 0), 0);
-        const pendingDon = totalDon - receivedDon;
-        const totalExp = expenses.reduce((s, e) => s + Number(e.totalAmount || 0), 0);
-        const paidExp = expenses.reduce((s, e) => s + Number(e.paidAmount || 0), 0);
-        const pendingExp = totalExp - paidExp;
-        const net = receivedDon - paidExp;
-
-        sumTotalDonations.textContent = formatCurrency(totalDon);
-        sumReceivedDonations.textContent = formatCurrency(receivedDon);
-        sumTotalExpenses.textContent = formatCurrency(totalExp);
-        sumPaidExpenses.textContent = formatCurrency(paidExp);
-        sumNetBalance.textContent = formatCurrency(net);
-        sumPendingDonations.textContent = formatCurrency(pendingDon);
-        sumPendingExpenses.textContent = formatCurrency(pendingExp);
       }
 
       function escapeHtml(s) {
