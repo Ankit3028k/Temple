@@ -6,8 +6,28 @@
   <title>श्री शांतिनाथ दिगम्बर जैन मंदिर</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Devanagari:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
+    :root {
+      --primary-color: #6B2D5C;
+      --accent-color: #D1A33F;
+      --text-color: #2D3748;
+      --background-color: #F9FAFB;
+      --card-bg: #FFFFFF;
+      --modal-bg: linear-gradient(145deg, #FFFFFF, #F5F7FA);
+      --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    body {
+      font-family: 'Noto Serif Devanagari', 'Inter', sans-serif;
+      background-color: var(--background-color);
+      color: var(--text-color);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
     .modal {
       display: none;
       position: fixed;
@@ -17,7 +37,7 @@
       width: 100%;
       height: 100%;
       overflow: auto;
-      background-color: rgba(0, 0, 0, 0.6);
+      background-color: rgba(0, 0, 0, 0.5);
       align-items: center;
       justify-content: center;
       animation: fadeIn 0.3s ease-in-out;
@@ -27,16 +47,16 @@
       to { opacity: 1; }
     }
     .modal-content {
-      background: linear-gradient(145deg, #ffffff, #f9f9f9);
+      background: var(--modal-bg);
       margin: 1.5rem auto;
-      padding: 1rem 0.5rem;
-      border-radius: 0.75rem;
-      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+      padding: 1.5rem;
+      border-radius: 1rem;
+      box-shadow: var(--shadow-md);
       width: 95%;
-      max-width: 480px;
-      min-width: 280px;
+      max-width: 500px;
+      min-width: 300px;
       position: relative;
-      border: 2px solid #D4AF37;
+      border: 2px solid var(--accent-color);
       animation: slideUp 0.3s ease-in-out;
     }
     @keyframes slideUp {
@@ -45,58 +65,57 @@
     }
     .modal-close {
       position: absolute;
-      top: 0.5rem;
-      right: 0.5rem;
+      top: 0.75rem;
+      right: 0.75rem;
       font-size: 1.25rem;
-      font-weight: bold;
-      color: #5A204A;
+      font-weight: 600;
+      color: var(--primary-color);
       cursor: pointer;
       transition: color 0.2s, transform 0.2s;
-      line-height: 1;
     }
     .modal-close:hover {
-      color: #D4AF37;
+      color: var(--accent-color);
       transform: scale(1.1);
     }
     #shareWhatsAppBtn {
       position: absolute;
-      top: 0.5rem;
-      right: 2.5rem;
+      top: 0.75rem;
+      right: 2.75rem;
       width: 2rem;
       height: 2rem;
       display: flex;
       align-items: center;
       justify-content: center;
-      background-color: #5A204A;
+      background-color: var(--primary-color);
       border-radius: 50%;
       cursor: pointer;
       transition: background-color 0.2s, transform 0.2s;
     }
     #shareWhatsAppBtn:hover {
-      background-color: #4A1A3D;
+      background-color: #5A204A;
       transform: scale(1.1);
     }
     #shareWhatsAppBtn .share-icon {
       width: 1.25rem;
       height: 1.25rem;
       object-fit: contain;
-      filter: brightness(0) invert(1); /* Ensures white color for icon */
+      filter: brightness(0) invert(1);
     }
     .modal-header {
       display: flex;
       flex-direction: row;
       align-items: center;
       justify-content: space-between;
-      padding-bottom: 0.75rem;
-      border-bottom: 2px solid #D4AF37;
-      margin-bottom: 0.75rem;
-      gap: 0.5rem;
+      padding-bottom: 1rem;
+      border-bottom: 2px solid var(--accent-color);
+      margin-bottom: 1rem;
+      gap: 0.75rem;
       max-width: 90%;
       margin-left: auto;
       margin-right: auto;
     }
     .modal-header .logo-placeholder {
-      width: 2.5rem;
+      width: 2.75rem;
       height: auto;
       object-fit: contain;
     }
@@ -112,81 +131,81 @@
       max-width: 80%;
     }
     .modal-header .spacer {
-      width: 2.5rem; /* Matches logo width for balance */
+      width: 2.75rem;
     }
     .modal-header h2 {
-      font-size: clamp(1.1rem, 4.5vw, 1.25rem);
-      font-weight: 700;
-      color: #5A204A;
+      font-size: clamp(1.25rem, 4.5vw, 1.5rem);
+      font-weight: 600;
+      color: var(--primary-color);
       margin: 0;
-      line-height: 1.2;
+      line-height: 1.3;
     }
     .modal-header p {
-      font-size: clamp(0.7rem, 2.8vw, 0.8rem);
-      color: #64748b;
-      margin: 0.2rem 0 0;
+      font-size: clamp(0.75rem, 3vw, 0.875rem);
+      color: #6B7280;
+      margin: 0.25rem 0 0;
     }
     .modal-details {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 0.5rem;
-      padding: 0.75rem 0;
+      gap: 0.75rem;
+      padding: 1rem 0;
       max-width: 90%;
       margin-left: auto;
       margin-right: auto;
     }
     .modal-details p {
       margin: 0;
-      font-size: clamp(0.75rem, 3.2vw, 0.85rem);
-      color: #1e293b;
+      font-size: clamp(0.8rem, 3.2vw, 0.9rem);
+      color: var(--text-color);
       display: flex;
       flex-direction: column;
     }
     .modal-details p span:first-child {
       font-weight: 600;
-      color: #5A204A;
-      font-size: clamp(0.65rem, 2.8vw, 0.75rem);
+      color: var(--primary-color);
+      font-size: clamp(0.7rem, 2.8vw, 0.8rem);
     }
     .modal-details p span:last-child {
-      color: #1e293b;
+      color: var(--text-color);
       font-weight: 400;
     }
     .modal-footer {
       text-align: center;
-      margin-top: 0.75rem;
-      padding-top: 0.75rem;
-      border-top: 1px solid #e5e7eb;
+      margin-top: 1rem;
+      padding-top: 1rem;
+      border-top: 1px solid #E5E7EB;
       display: flex;
       flex-direction: column;
-      gap: 0.5rem;
+      gap: 0.75rem;
       max-width: 90%;
       margin-left: auto;
       margin-right: auto;
     }
     .modal-footer p {
-      font-size: clamp(0.65rem, 2.8vw, 0.75rem);
-      color: #64748b;
+      font-size: clamp(0.7rem, 2.8vw, 0.8rem);
+      color: #6B7280;
       margin: 0;
     }
     .error-text {
-      color: #dc2626;
+      color: #DC2626;
       font-size: 0.75rem;
-      margin-top: 0.2rem;
+      margin-top: 0.25rem;
     }
     @media (max-width: 640px) {
       .modal-content {
-        padding: 0.75rem 0.5rem;
+        padding: 1rem;
         margin: 1rem auto;
-        border-radius: 0.5rem;
+        border-radius: 0.75rem;
       }
       .modal-close {
-        top: 0.4rem;
-        right: 0.4rem;
+        top: 0.5rem;
+        right: 0.5rem;
         font-size: 1rem;
       }
       #shareWhatsAppBtn {
-        top: 0.4rem;
-        right: 2rem;
+        top: 0.5rem;
+        right: 2.25rem;
         width: 1.75rem;
         height: 1.75rem;
       }
@@ -195,49 +214,49 @@
         height: 1rem;
       }
       .modal-header {
-        gap: 0.4rem;
-        padding-bottom: 0.5rem;
-        margin-bottom: 0.5rem;
+        gap: 0.5rem;
+        padding-bottom: 0.75rem;
+        margin-bottom: 0.75rem;
         max-width: 95%;
       }
       .modal-header .logo-placeholder {
-        width: 2rem;
+        width: 2.25rem;
       }
       .modal-header .spacer {
-        width: 2rem;
+        width: 2.25rem;
       }
       .modal-details {
-        gap: 0.4rem;
-        padding: 0.5rem 0;
+        gap: 0.5rem;
+        padding: 0.75rem 0;
         max-width: 95%;
       }
       .modal-details p {
-        font-size: clamp(0.7rem, 3vw, 0.8rem);
+        font-size: clamp(0.75rem, 3vw, 0.85rem);
       }
       .modal-details p span:first-child {
-        font-size: clamp(0.6rem, 2.5vw, 0.7rem);
+        font-size: clamp(0.65rem, 2.5vw, 0.75rem);
       }
       .modal-footer {
-        margin-top: 0.5rem;
-        padding-top: 0.5rem;
+        margin-top: 0.75rem;
+        padding-top: 0.75rem;
         max-width: 95%;
       }
       .modal-footer p {
-        font-size: clamp(0.6rem, 2.5vw, 0.7rem);
+        font-size: clamp(0.65rem, 2.5vw, 0.75rem);
       }
     }
     @media (max-width: 480px) {
       .modal-content {
         min-width: 90%;
-        padding: 0.5rem 0.25rem;
+        padding: 0.75rem;
       }
       .modal-close {
-        top: 0.4rem;
-        right: 0.4rem;
+        top: 0.5rem;
+        right: 0.5rem;
         font-size: 0.875rem;
       }
       #shareWhatsAppBtn {
-        right: 1.75rem;
+        right: 2rem;
         width: 1.5rem;
         height: 1.5rem;
       }
@@ -249,40 +268,35 @@
         max-width: 95%;
       }
       .modal-header .logo-placeholder {
-        width: 1.75rem;
+        width: 2rem;
       }
       .modal-header .spacer {
-        width: 1.75rem;
+        width: 2rem;
       }
       .modal-header h2 {
-        font-size: clamp(1rem, 4vw, 1.15rem);
+        font-size: clamp(1.125rem, 4vw, 1.25rem);
       }
       .modal-header p {
-        font-size: clamp(0.6rem, 2.5vw, 0.7rem);
+        font-size: clamp(0.65rem, 2.5vw, 0.75rem);
       }
       .modal-details {
         max-width: 95%;
       }
       .modal-details p {
-        font-size: clamp(0.65rem, 2.8vw, 0.75rem);
+        font-size: clamp(0.7rem, 2.8vw, 0.8rem);
       }
       .modal-details p span:first-child {
-        font-size: clamp(0.55rem, 2.3vw, 0.65rem);
+        font-size: clamp(0.6rem, 2.3vw, 0.7rem);
       }
       .modal-footer {
         max-width: 95%;
       }
     }
-    /* Other styles (unchanged) */
-    .error-text {
-      color: #dc2626;
-      font-size: 0.75rem;
-      margin-top: 0.2rem;
-    }
+
     header {
-      background-color: #5A204A;
+      background-color: var(--primary-color);
       color: white;
-      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      box-shadow: var(--shadow-md);
       position: sticky;
       top: 0;
       z-index: 20;
@@ -291,7 +305,7 @@
       max-width: 80rem;
       margin-left: auto;
       margin-right: auto;
-      padding: 1rem 1.5rem;
+      padding: 1.25rem 1.5rem;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -299,76 +313,117 @@
     header .flex {
       display: flex;
       align-items: center;
-      gap: 0.75rem;
+      gap: 1rem;
     }
     header img {
-      height: 2.5rem;
+      height: 3rem;
       width: auto;
     }
     header a {
       color: white;
       text-decoration: none;
+      transition: color 0.2s;
     }
     header a:hover {
-      color: #d1d5db;
+      color: #E5E7EB;
     }
     header h1 {
-      font-size: 1.5rem;
+      font-size: clamp(1.5rem, 5vw, 1.75rem);
       font-weight: 600;
+      line-height: 1.2;
     }
+    .icon-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 2.5rem;
+      height: 2.5rem;
+      border-radius: 0.5rem;
+      transition: background-color 0.2s, transform 0.2s;
+      cursor: pointer;
+    }
+    .icon-btn:hover {
+      background-color: rgba(255, 255, 255, 0.1);
+      transform: scale(1.1);
+    }
+    .icon-btn svg {
+      width: 1.5rem;
+      height: 1.5rem;
+      fill: none;
+      stroke: white;
+      stroke-width: 2;
+    }
+
     main {
       max-width: 80rem;
       margin-left: auto;
       margin-right: auto;
-      padding: 2rem 1.5rem;
+      padding: 2.5rem 1.5rem;
     }
-    .mb-8 {
-      margin-bottom: 2rem;
+    .stats-card {
+      background: var(--card-bg);
+      border: 1px solid var(--accent-color);
+      border-radius: 0.75rem;
+      padding: 1.25rem;
+      box-shadow: var(--shadow-sm);
+      text-align: center;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
     }
+    .stats-card:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-md);
+    }
+    .stats-card .value {
+      font-size: clamp(1.5rem, 5vw, 1.75rem);
+      font-weight: 600;
+      color: var(--primary-color);
+      margin-bottom: 0.5rem;
+    }
+    .stats-card .label {
+      font-size: clamp(0.85rem, 3.2vw, 1rem);
+      font-weight: 500;
+      color: #6B7280;
+    }
+    @media (max-width: 768px) {
+      .stats-card {
+        padding: 1rem;
+      }
+      .stats-card .value {
+        font-size: clamp(1.25rem, 4.5vw, 1.5rem);
+      }
+      .stats-card .label {
+        font-size: clamp(0.75rem, 3vw, 0.875rem);
+      }
+    }
+    @media (max-width: 480px) {
+      .stats-card {
+        padding: 0.75rem;
+      }
+      .stats-card .value {
+        font-size: clamp(1rem, 4vw, 1.25rem);
+      }
+      .stats-card .label {
+        font-size: clamp(0.7rem, 2.8vw, 0.8rem);
+      }
+    }
+
     .grid-cols-2 {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 1rem;
+      gap: 1.25rem;
     }
     @media (min-width: 768px) {
-      .md\:grid-cols-3 {
-        grid-template-columns: repeat(3, minmax(0, 1fr));
+      .md\:grid-cols-2 {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
       }
     }
     @media (min-width: 1024px) {
-      .lg\:grid-cols-5 {
-        grid-template-columns: repeat(5, minmax(0, 1fr));
+      .lg\:grid-cols-4 {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
       }
     }
-    .bg-white {
-      background-color: white;
-    }
-    .rounded-lg {
-      border-radius: 0.5rem;
-    }
-    .p-4 {
-      padding: 1rem;
-    }
-    .shadow-sm {
-      box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-    }
-    .text-center {
-      text-align: center;
-    }
-    .text-2xl {
-      font-size: 1.5rem;
-      line-height: 2rem;
-    }
-    .font-bold {
-      font-weight: 700;
-    }
-  
-    .text-sm {
-      font-size: 0.875rem;
-      line-height: 1.25rem;
-    }
-    .text-gray-600 {
-      color: #4b5563;
+    .mb-8 {
+      margin-bottom: 2.5rem;
     }
     .grid-cols-1 {
       display: grid;
@@ -386,48 +441,48 @@
       }
     }
     .gap-8 {
-      gap: 2rem;
+      gap: 2.5rem;
     }
     .rounded-xl {
       border-radius: 0.75rem;
     }
     .shadow-md {
-      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      box-shadow: var(--shadow-md);
     }
     .p-6 {
-      padding: 1.5rem;
+      padding: 1.75rem;
     }
     .text-xl {
-      font-size: 1.25rem;
+      font-size: clamp(1.25rem, 4.5vw, 1.5rem);
       line-height: 1.75rem;
     }
     .font-semibold {
       font-weight: 600;
     }
     .text-gray-800 {
-      color: #1f2937;
+      color: var(--text-color);
     }
     .mb-6 {
-      margin-bottom: 1.5rem;
+      margin-bottom: 1.75rem;
     }
     .space-y-5 > :not([hidden]) ~ :not([hidden]) {
-      margin-top: 1.25rem;
+      margin-top: 1.5rem;
     }
     .block {
       display: block;
     }
     .text-sm {
-      font-size: 0.875rem;
-      line-height: 1.25rem;
+      font-size: clamp(0.85rem, 3.2vw, 0.95rem);
+      line-height: 1.4;
     }
     .font-medium {
       font-weight: 500;
     }
     .text-gray-700 {
-      color: #374151;
+      color: #4B5563;
     }
     .mt-1 {
-      margin-top: 0.25rem;
+      margin-top: 0.5rem;
     }
     .w-full {
       width: 100%;
@@ -444,7 +499,7 @@
       border-width: 1px;
     }
     .border-gray-300 {
-      border-color: #d1d5db;
+      border-color: #D1D5DB;
     }
     .rounded-lg {
       border-radius: 0.5rem;
@@ -454,12 +509,11 @@
     }
     .focus\:ring-2:focus {
       --tw-ring-offset-width: 2px;
-      box-shadow: 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color), 0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color);
+      box-shadow: 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color), 0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--accent-color);
     }
-  
     .transition {
       transition-property: all;
-      transition-duration: 150ms;
+      transition-duration: 200ms;
       transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
     }
     .grid-cols-1 {
@@ -496,25 +550,24 @@
       padding-top: 0.75rem;
       padding-bottom: 0.75rem;
     }
-   
     .bg-gray-200 {
-      background-color: #e5e7eb;
+      background-color: #E5E7EB;
     }
     .text-gray-800 {
-      color: #1f2937;
+      color: var(--text-color);
     }
     .hover\:bg-gray-300:hover {
-      background-color: #d1d5db;
+      background-color: #D1D5DB;
     }
     .text-xs {
-      font-size: 0.75rem;
-      line-height: 1rem;
+      font-size: clamp(0.7rem, 2.8vw, 0.8rem);
+      line-height: 1.2;
     }
     .text-gray-500 {
-      color: #6b7280;
+      color: #6B7280;
     }
     .mb-6 {
-      margin-bottom: 1.5rem;
+      margin-bottom: 1.75rem;
     }
     .flex-col {
       flex-direction: column;
@@ -546,10 +599,10 @@
       padding-bottom: 0.5rem;
     }
     .bg-white {
-      background-color: white;
+      background-color: var(--card-bg);
     }
     .text-gray-900 {
-      color: #111827;
+      color: var(--text-color);
     }
     .gap-3 {
       gap: 0.75rem;
@@ -558,21 +611,21 @@
       overflow-x: auto;
     }
     .border-gray-200 {
-      border-color: #e5e7eb;
+      border-color: #E5E7EB;
     }
     .table-auto {
       table-layout: auto;
     }
     .text-sm {
-      font-size: 0.875rem;
-      line-height: 1.25rem;
+      font-size: clamp(0.85rem, 3.2vw, 0.95rem);
+      line-height: 1.4;
     }
     .text-gray-600 {
-      color: #4b5563;
+      color: #4B5563;
     }
     .py-4 {
-      padding-top: 1rem;
-      padding-bottom: 1rem;
+      padding-top: 1.25rem;
+      padding-bottom: 1.25rem;
     }
     .px-4 {
       padding-left: 1rem;
@@ -588,17 +641,17 @@
       display: none;
     }
     .py-8 {
-      padding-top: 2rem;
-      padding-bottom: 2rem;
+      padding-top: 2.5rem;
+      padding-bottom: 2.5rem;
     }
     .text-gray-500 {
-      color: #6b7280;
+      color: #6B7280;
     }
     .border-t {
       border-top-width: 1px;
     }
     .hover\:bg-gray-50:hover {
-      background-color: #f9fafb;
+      background-color: #F9FAFB;
     }
     .px-3 {
       padding-left: 0.75rem;
@@ -611,115 +664,127 @@
     .rounded-full {
       border-radius: 9999px;
     }
-   
     .h-5 {
       height: 1.25rem;
     }
     .w-5 {
       width: 1.25rem;
     }
- 
-    .antialiased {
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
+    input::placeholder,
+    select::placeholder {
+      color: #9CA3AF;
+      opacity: 0.8;
+    }
+    input:focus,
+    select:focus {
+      border-color: var(--accent-color);
+      box-shadow: 0 0 0 3px rgba(209, 163, 63, 0.2);
+    }
+    button {
+      transition: background-color 0.2s, transform 0.2s;
+    }
+    button:hover {
+      transform: translateY(-1px);
     }
   </style>
 </head>
-<body class="bg-[#FDFDFD] font-['Inter'] text-gray-900 antialiased">
-  <header class="bg-[#5A204A] text-white shadow-lg sticky top-0 z-20">
+<body>
+  <header class="bg-[var(--primary-color)] text-white shadow-lg sticky top-0 z-20">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
       <div class="flex items-center gap-3">
         <img src="logo2.png" alt="Jain Logo" class="h-10 w-auto">
         <a href="index.html" class="text-white hover:text-gray-300"><h1 class="text-2xl font-semibold">श्री शांतिनाथ दिगम्बर जैन मंदिर</h1></a>
       </div>
+      <nav id="headerNav"></nav>
     </div>
   </header>
 
   <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-    <div class="mb-8 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
-      <div class="bg-white rounded-lg p-4 shadow-sm text-center">
-        <div class="text-2xl font-bold text-[#5A204A]" id="totalCount">0</div>
-        <div class="text-sm text-gray-600">Total Records</div>
+    <h1 class="text-3xl font-bold text-[var(--text-color)] mb-6 text-center">All Donation Details</h1>
+
+    <div class="mb-8 grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div class="stats-card">
+        <div class="value" id="totalCount">0</div>
+        <div class="label">Total Records</div>
       </div>
-      <div class="bg-white rounded-lg p-4 shadow-sm text-center">
-        <div class="text-2xl font-bold text-[#5A204A]" id="pendingCount">0</div>
-        <div class="text-sm text-gray-600">Pending Count</div>
+      <div class="stats-card">
+        <div class="value" id="pendingCount">0</div>
+        <div class="label">Pending Count</div>
       </div>
-      <div class="bg-white rounded-lg p-4 shadow-sm text-center">
-        <div class="text-2xl font-bold text-[#5A204A]" id="completedCount">0</div>
-        <div class="text-sm text-gray-600">Completed Count</div>
+      <div class="stats-card">
+        <div class="value" id="completedCount">0</div>
+        <div class="label">Completed Count</div>
       </div>
-      <div class="bg-white rounded-lg p-4 shadow-sm text-center">
-        <div class="text-2xl font-bold text-[#5A204A]" id="totalAmountDisplay">₹0.00</div>
-        <div class="text-sm text-gray-600">Total Amount</div>
-      </div>
-      <div class="bg-white rounded-lg p-4 shadow-sm text-center">
-        <div class="text-2xl font-bold text-[#5A204A]" id="completedAmount">₹0.00</div>
-        <div class="text-sm text-gray-600">Completed Amount</div>
+      <div class="stats-card">
+        <div class="value" id="totalAmountDisplay">₹0.00</div>
+        <div class="label">Total Amount</div>
       </div>
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-      <section class="bg-white rounded-xl shadow-md p-6 lg:col-span-1">
-        <h2 class="text-xl font-semibold text-gray-800 mb-6">Add / Edit Donation</h2>
+      <section class="bg-[var(--card-bg)] rounded-xl shadow-md p-6 lg:col-span-1">
+        <h2 class="text-xl font-semibold text-[var(--text-color)] mb-6">Add / Edit Donation</h2>
         <form id="donationForm" class="space-y-5">
           <input type="hidden" id="editingId" />
           <div>
-            <label for="donor" class="block text-sm font-medium text-gray-700">Donor Name</label>
-            <input id="donor" placeholder="e.g., Your name" required class="mt-1 w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#5A204A] transition" />
+            <label for="donor" class="block text-sm font-medium text-[var(--text-color)]">Donor Name</label>
+            <input id="donor" placeholder="e.g., Your name" required class="mt-1 w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--accent-color)] transition" />
             <p id="donorError" class="error-text hidden">Please enter a valid donor name.</p>
           </div>
           <div>
-            <label for="eventName" class="block text-sm font-medium text-gray-700">Event Name</label>
-            <input id="eventName" placeholder="e.g., Event name " required class="mt-1 w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#5A204A] transition" />
+            <label for="eventName" class="block text-sm font-medium text-[var(--text-color)]">Event Name</label>
+            <input id="eventName" placeholder="e.g., Event name" required class="mt-1 w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--accent-color)] transition" />
             <p id="eventNameError" class="error-text hidden">Please enter a valid event name.</p>
           </div>
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label for="eventDate" class="block text-sm font-medium text-gray-700">Event Date</label>
-              <input id="eventDate" type="date" required class="mt-1 w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#5A204A] transition" />
+              <label for="eventDate" class="block text-sm font-medium text-[var(--text-color)]">Event Date</label>
+              <input id="eventDate" type="date" required class="mt-1 w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--accent-color)] transition" />
               <p id="eventDateError" class="error-text hidden">Please select a valid event date.</p>
             </div>
             <div>
-              <label for="totalAmount" class="block text-sm font-medium text-gray-700">Total Amount (INR)</label>
-              <input id="totalAmount" type="number" min="0" step="0.01" placeholder="e.g., 500.00" required class="mt-1 w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#5A204A] transition" />
+              <label for="totalAmount" class="block text-sm font-medium text-[var(--text-color)]">Total Amount (INR)</label>
+              <input id="totalAmount" type="number" min="0" step="0.01" placeholder="e.g., 500.00" required class="mt-1 w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--accent-color)] transition" />
               <p id="totalAmountError" class="error-text hidden">Please enter a valid total amount (≥ 0).</p>
             </div>
           </div>
           <div>
-            <label for="paidAmount" class="block text-sm font-medium text-gray-700">Paid Amount (INR)</label>
-            <input id="paidAmount" type="number" min="0" step="0.01" placeholder="e.g., 100.00" required class="mt-1 w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#5A204A] transition" />
+            <label for="paidAmount" class="block text-sm font-medium text-[var(--text-color)]">Paid Amount (INR)</label>
+            <input id="paidAmount" type="number" min="0" step="0.01" placeholder="e.g., 100.00" required class="mt-1 w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--accent-color)] transition" />
             <p id="paidAmountError" class="error-text hidden">Please enter a valid paid amount (≥ 0 and ≤ total amount).</p>
           </div>
           <div class="flex gap-4">
-            <button type="submit" id="saveBtn" class="w-full sm:w-auto px-6 py-3 bg-[#5A204A] text-white rounded-lg hover:bg-[#4A1A3D] transition">Save Donation</button>
-            <button type="button" id="resetBtn" class="w-full sm:w-auto px-6 py-3 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition">Reset</button>
+            <button type="submit" id="saveBtn" class="w-full sm:w-auto px-6 py-3 bg-[var(--primary-color)] text-white rounded-lg hover:bg-[#5A204A] transition">Save Donation</button>
+            <button type="button" id="resetBtn" class="w-full sm:w-auto px-6 py-3 bg-gray-200 text-[var(--text-color)] rounded-lg hover:bg-gray-300 transition">Reset</button>
           </div>
           <p class="text-xs text-gray-500">Data is managed by the backend server.</p>
         </form>
       </section>
 
-      <section class="bg-white rounded-xl shadow-md p-6 lg:col-span-2">
-        <h2 class="text-xl font-semibold text-gray-800 mb-6">Donations</h2>
+      <section class="bg-[var(--card-bg)] rounded-xl shadow-md p-6 lg:col-span-2">
+        <h2 class="text-xl font-semibold text-[var(--text-color)] mb-6">Donations</h2>
         <div class="mb-6 flex flex-col sm:flex-row gap-4 items-center justify-between flex-wrap">
           <div class="flex flex-col sm:flex-row gap-3 items-center w-full sm:w-auto">
-            <input id="search" type="search" placeholder="Search donor or event..." class="w-full sm:w-64 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#5A204A] bg-white text-gray-900 transition" />
-            <select id="filterStatus" class="w-full sm:w-auto px-4  py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#5A204A] bg-white text-gray-900">
+            <input id="search" type="search" placeholder="Search donor or event..." class="w-full sm:w-64 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--accent-color)] bg-white text-[var(--text-color)] transition" />
+            <select id="filterStatus" class="w-full sm:w-auto px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--accent-color)] bg-white text-[var(--text-color)]">
               <option value="all">All Statuses</option>
               <option value="completed">Completed</option>
               <option value="pending">Pending</option>
             </select>
           </div>
           <div class="flex gap-3 flex-wrap">
-            <button id="exportCsv" class="w-full sm:w-auto px-4 py-2 bg-[#5A204A] text-white rounded-lg hover:bg-[#4A1A3D] transition">Export CSV</button>
+            <button id="exportCsv" class="w-full sm:w-auto px-4 py-2 bg-[var(--primary-color)] text-white rounded-lg hover:bg-[#5A204A] transition">Export CSV</button>
+            <button id="backupBtn" class="w-full sm:w-auto px-4 py-2 bg-[var(--accent-color)] text-[var(--primary-color)] rounded-lg hover:bg-[#F0E68C] transition">Backup</button>
           </div>
         </div>
         <div class="overflow-x-auto border border-gray-200 rounded-lg">
           <table class="w-full table-auto">
             <thead>
-              <tr class="text-sm text-gray-600">
+              <tr class="text-sm text-gray-600 bg-gray-50">
                 <th class="py-4 px-4 text-left font-medium">Donor</th>
-                <th class="py-4 px-4 text-left font-medium">Event Date</th>
+                <th class="py-4 px-4 text-left font-medium">Event</th>
+                <th class="py-4 px-4 text-left font-medium">Date</th>
+                <th class="py-4 px-4 text-left font-medium">Amount</th>
                 <th class="py-4 px-4 text-left font-medium">Status</th>
                 <th class="py-4 px-4 text-left font-medium">Actions</th>
               </tr>
@@ -764,14 +829,16 @@
     </div>
   </main>
 
+  <footer class="bg-[var(--primary-color)] text-white text-center p-4">
+    <p>&copy; 2025 श्री शांतिनाथ दिगम्बर जैन मंदिर. All rights reserved.</p>
+  </footer>
+
   <script>
     document.addEventListener('DOMContentLoaded', () => {
-      // Utility
       function formatCurrency(n) {
         return new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 2 }).format(Number(n) || 0);
       }
 
-      // Elements
       const form = document.getElementById('donationForm');
       const donor = document.getElementById('donor');
       const eventName = document.getElementById('eventName');
@@ -790,10 +857,10 @@
       const pendingCount = document.getElementById('pendingCount');
       const completedCount = document.getElementById('completedCount');
       const totalAmountDisplay = document.getElementById('totalAmountDisplay');
-      const completedAmount = document.getElementById('completedAmount');
       const search = document.getElementById('search');
       const filterSel = document.getElementById('filterStatus');
       const exportBtn = document.getElementById('exportCsv');
+      const backupBtn = document.getElementById('backupBtn');
       const previewModal = document.getElementById('previewModal');
       const modalClose = document.querySelector('.modal-close');
       const modalDonor = document.getElementById('modalDonor');
@@ -805,8 +872,8 @@
       const modalStatus = document.getElementById('modalStatus');
       const issueDate = document.getElementById('issueDate');
       const shareWhatsAppBtn = document.getElementById('shareWhatsAppBtn');
+      const headerNav = document.getElementById('headerNav');
 
-      // Debug: Verify elements
       console.log('Form elements:', { donor, eventName, eventDate, totalAmount, paidAmount });
       if (!totalAmount) {
         console.error('totalAmount input not found. Check HTML id attribute.');
@@ -818,10 +885,38 @@
       let filterStatus = 'all';
       let searchText = '';
 
-      // Initialize defaults
       eventDate.valueAsDate = new Date();
 
-      // Modal handlers
+      const token = localStorage.getItem('token');
+      if (token) {
+        const logoutA = document.createElement('a');
+        logoutA.href = '#';
+        logoutA.className = 'icon-btn';
+        logoutA.title = 'Logout';
+        logoutA.innerHTML = `
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M17 16l4-4m0 0l-4-4m4 4H7m5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h3a3 3 0 013 3v1" />
+          </svg>
+        `;
+        logoutA.addEventListener('click', (e) => {
+          e.preventDefault();
+          localStorage.removeItem('token');
+          window.location.href = '/login.html';
+        });
+        headerNav.appendChild(logoutA);
+      } else {
+        const loginA = document.createElement('a');
+        loginA.href = '/login.html';
+        loginA.className = 'icon-btn';
+        loginA.title = 'Admin Login';
+        loginA.innerHTML = `
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-3.33 0-6 2.67-6 6v1h12v-1c0-3.33-2.67-6-6-6z" />
+          </svg>
+        `;
+        headerNav.appendChild(loginA);
+      }
+
       function openModal(donation) {
         modalDonor.textContent = donation.donor;
         modalEventName.textContent = donation.eventName || 'None';
@@ -844,30 +939,30 @@
         }
       });
 
-      // Share on WhatsApp
       async function generateImage() {
         const modalContent = document.querySelector('.modal-content');
         const modalCloseEl = document.querySelector('.modal-close');
         const shareBtnEl = document.querySelector('#shareWhatsAppBtn');
 
-        // Hide unwanted elements
+        const originalBackground = modalContent.style.background;
+        modalContent.style.background = '#ffffff';
         modalCloseEl.style.display = 'none';
         shareBtnEl.style.display = 'none';
 
         try {
           const canvas = await html2canvas(modalContent, {
-            scale: 2, // High-resolution output
-            useCORS: true, // Handle external images
-            backgroundColor: null // Preserve gradient background
+            scale: 2,
+            useCORS: true,
+            backgroundColor: '#ffffff'
           });
 
-          // Restore hidden elements
+          modalContent.style.background = originalBackground;
           modalCloseEl.style.display = 'block';
           shareBtnEl.style.display = 'flex';
 
-          return canvas.toDataURL('image/png', 1.0); // HD PNG
+          return canvas.toDataURL('image/png', 1.0);
         } catch (error) {
-          // Restore elements in case of error
+          modalContent.style.background = originalBackground;
           modalCloseEl.style.display = 'block';
           shareBtnEl.style.display = 'flex';
           console.error('Error generating image:', error);
@@ -882,14 +977,12 @@
           const file = new File([imageBlob], `donation-receipt.png`, { type: 'image/png' });
 
           if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
-            // Use Web Share API for mobile devices
             await navigator.share({
               files: [file],
               title: 'Donation Receipt - श्री शांतिनाथ दिगम्बर जैन मंदिर',
               text: `Thank you for your donation! Here is your receipt from श्री शांतिनाथ दिगम्बर जैन मंदिर.`
             });
           } else {
-            // Fallback: Download image and open WhatsApp URL
             const message = encodeURIComponent(`Thank you for your donation! Here is your receipt from श्री शांतिनाथ दिगम्बर जैन मंदिर.`);
             const whatsappUrl = `https://wa.me/?text=${message}`;
             window.open(whatsappUrl, '_blank');
@@ -907,7 +1000,6 @@
         }
       });
 
-      // Fetch and Render
       function getAuthHeaders() {
         const token = localStorage.getItem('token');
         return token ? { 'Authorization': `Bearer ${token}` } : {};
@@ -948,7 +1040,6 @@
         pendingCount.textContent = donations.filter(d => d.status === 'pending').length;
         completedCount.textContent = donations.filter(d => d.status === 'completed').length;
         totalAmountDisplay.textContent = formatCurrency(donations.reduce((s, d) => s + Number(d.totalAmount || 0), 0));
-        completedAmount.textContent = formatCurrency(donations.filter(d => d.status === 'completed').reduce((s, d) => s + Number(d.paidAmount || 0), 0));
 
         tbody.innerHTML = '';
         if (view.length === 0) {
@@ -961,15 +1052,17 @@
           tr.className = 'border-t border-gray-200 hover:bg-gray-50 transition';
           tr.innerHTML = `
             <td class="py-4 px-4 font-medium">${escapeHtml(d.donor)}</td>
+            <td class="py-4 px-4">${escapeHtml(d.eventName || 'None')}</td>
             <td class="py-4 px-4">${escapeHtml(new Date(d.eventDate).toISOString().split('T')[0])}</td>
+            <td class="py-4 px-4">${formatCurrency(Number(d.totalAmount))}</td>
             <td class="py-4 px-4">
-              <span class="inline-block px-3 py-1 text-xs font-medium rounded-full ${d.status === 'completed' ? 'bg-[#D4AF37] text-[#5A204A]' : 'bg-[#F0E68C] text-[#5A204A]'}">
+              <span class="inline-block px-3 py-1 text-xs font-medium rounded-full ${d.status === 'completed' ? 'bg-[var(--accent-color)] text-[var(--primary-color)]' : 'bg-[#F0E68C] text-[var(--primary-color)]'}">
                 ${d.status.charAt(0).toUpperCase() + d.status.slice(1)}
               </span>
             </td>
             <td class="py-4 px-4 flex gap-2">
-              <button class="px-4 py-1 bg-[#D4AF37] text-[#5A204A] rounded-lg hover:bg-[#F0E68C] transition" data-edit="${d._id}">Edit</button>
-              <button class="px-2 py-1 text-[#5A204A] rounded-lg hover:text-[#4A1A3D] transition" data-preview="${d._id}">
+              <button class="px-4 py-1 bg-[var(--accent-color)] text-[var(--primary-color)] rounded-lg hover:bg-[#F0E68C] transition" data-edit="${d._id}">Edit</button>
+              <button class="px-2 py-1 text-[var(--primary-color)] rounded-lg hover:text-[#5A204A] transition" data-preview="${d._id}">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
@@ -985,7 +1078,6 @@
         return String(s).replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;');
       }
 
-      // Form validation
       function clearErrors() {
         donorError.classList.add('hidden');
         eventNameError.classList.add('hidden');
@@ -994,7 +1086,6 @@
         paidAmountError.classList.add('hidden');
       }
 
-      // Real-time validation
       totalAmount.addEventListener('input', () => {
         const value = totalAmount.value;
         totalAmountError.textContent = !value ? 'Total amount is required.' : Number(value) < 0 ? 'Total amount must be ≥ 0.' : '';
@@ -1126,7 +1217,6 @@
         render();
       });
 
-      // Export CSV
       function toCsv(rows) {
         if (!rows.length) return '';
         const headers = ['_id', 'donor', 'eventName', 'eventDate', 'totalAmount', 'paidAmount', 'pendingAmount', 'status'];
@@ -1136,6 +1226,16 @@
           lines.push(headers.map(h => esc(h === 'eventDate' ? new Date(r[h]).toISOString().split('T')[0] : r[h])).join(','));
         }
         return lines.join('\n');
+      }
+
+      function generateXLSX(rows) {
+        if (typeof XLSX === 'undefined') {
+          throw new Error('XLSX library is not loaded.');
+        }
+        const ws = XLSX.utils.json_to_sheet(rows);
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, "Donations");
+        return XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
       }
 
       function download(filename, content, mime = 'text/plain;charset=utf-8') {
@@ -1158,13 +1258,40 @@
         download('temple-donations.csv', csv, 'text/csv;charset=utf-8');
       });
 
-      // Initial fetch
+      backupBtn.addEventListener('click', async () => {
+        if (!donations.length) {
+          alert('No data to backup');
+          return;
+        }
+        try {
+          const data = generateXLSX(donations);
+          const blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+          const file = new File([blob], 'temple-donations.xlsx', { type: blob.type });
+          const subject = encodeURIComponent('Temple Donations Backup');
+          const body = encodeURIComponent('Attached is the backup of donations data from श्री शांतिनाथ दिगम्बर जैन मंदिर. ');
+          const mailtoUrl = `mailto:jainsahil760@gmail.com?subject=${subject}&body=${body}`;
+
+          // Attempt to use navigator.share if supported
+          if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+            await navigator.share({
+              files: [file],
+              title: 'Temple Donations Backup',
+              text: 'Backup of donations data. Please email to jainsahil760@gmail.com.'
+            });
+          } else {
+            // Fallback: Download the file and open mailto link
+            download('temple-donations.xlsx', data, blob.type);
+            window.open(mailtoUrl, '_blank');
+            alert('Backup file has been downloaded as temple-donations.xlsx. Your email client should have opened with a pre-filled email to jainsahil760@gmail.com. Please manually attach the downloaded file (temple-donations.xlsx) to the email and send it.');
+          }
+        } catch (error) {
+          console.error('Error creating backup:', error);
+          alert('Failed to create backup: ' + error.message);
+        }
+      });
+
       fetchDonations();
     });
   </script>
-   <footer class="bg-[#5A204A] text-white text-center p-4 mt-[150px]">
-    <p>&copy; 2025 श्री शांतिनाथ दिगम्बर जैन मंदिर. All rights reserved.</p>
-    <!-- <p>Contact: +91 9876543210</p> -->
-  </footer>
 </body>
 </html>
