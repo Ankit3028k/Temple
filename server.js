@@ -65,14 +65,14 @@ const DonationSchema = new mongoose.Schema({
   createdBy: { type: String, required: true },
 }, { timestamps: true });
 
-// Pre-save middleware
+// Pre-save middleware for Donation
 DonationSchema.pre('save', function(next) {
   this.pendingAmount = this.totalAmount - this.paidAmount;
   this.status = this.pendingAmount > 0 ? 'pending' : 'completed';
   next();
 });
 
-// Pre-update middleware
+// Pre-update middleware for Donation
 DonationSchema.pre('findOneAndUpdate', function(next) {
   const update = this.getUpdate();
   if (update.totalAmount !== undefined && update.paidAmount !== undefined) {
@@ -83,6 +83,37 @@ DonationSchema.pre('findOneAndUpdate', function(next) {
 });
 
 const Donation = mongoose.model('Donation', DonationSchema);
+
+// Expense Schema
+const ExpenseSchema = new mongoose.Schema({
+  recipient: { type: String, required: true, trim: true },
+  purpose: { type: String, required: true, trim: true },
+  date: { type: Date, required: true },
+  totalAmount: { type: Number, required: true, min: 0 },
+  paidAmount: { type: Number, required: true, min: 0 },
+  pendingAmount: { type: Number },
+  status: { type: String, enum: ['pending', 'completed'] },
+  createdBy: { type: String, required: true },
+}, { timestamps: true });
+
+// Pre-save middleware for Expense
+ExpenseSchema.pre('save', function(next) {
+  this.pendingAmount = this.totalAmount - this.paidAmount;
+  this.status = this.pendingAmount > 0 ? 'pending' : 'completed';
+  next();
+});
+
+// Pre-update middleware for Expense
+ExpenseSchema.pre('findOneAndUpdate', function(next) {
+  const update = this.getUpdate();
+  if (update.totalAmount !== undefined && update.paidAmount !== undefined) {
+    update.pendingAmount = update.totalAmount - update.paidAmount;
+    update.status = update.pendingAmount > 0 ? 'pending' : 'completed';
+  }
+  next();
+});
+
+const Expense = mongoose.model('Expense', ExpenseSchema);
 
 // JWT Authentication Middleware
 function authenticateToken(req, res, next) {
@@ -148,6 +179,8 @@ app.get('/admin', authenticateToken, (req, res) => {
   res.sendFile(path.join(__dirname, 'admin.html'));
 });
 
+// Donation Routes
+
 // Get all donations (public)
 app.get('/api/donations', async (req, res) => {
   try {
@@ -175,7 +208,7 @@ app.get('/api/donations/admin', authenticateToken, async (req, res) => {
 
 // Add a new donation (protected)
 app.post('/api/donations', authenticateToken, async (req, res) => {
-  console.log('Received donation data:', req.body); // Debug log
+  console.log('Received donation data:', req.body);
   try {
     const { donor, eventName, eventDate, totalAmount, paidAmount } = req.body;
     if (!donor || !eventName || !eventDate || !isFinite(totalAmount) || totalAmount < 0 || !isFinite(paidAmount) || paidAmount < 0 || paidAmount > totalAmount) {
@@ -203,7 +236,7 @@ app.post('/api/donations', authenticateToken, async (req, res) => {
 
 // Update a donation (protected)
 app.put('/api/donations/:id', authenticateToken, async (req, res) => {
-  console.log('Received update donation data:', req.body); // Debug log
+  console.log('Received update donation data:', req.body);
   try {
     const { donor, eventName, eventDate, totalAmount, paidAmount } = req.body;
     if (!donor || !eventName || !eventDate || !isFinite(totalAmount) || totalAmount < 0 || !isFinite(paidAmount) || paidAmount < 0 || paidAmount > totalAmount) {
@@ -228,7 +261,7 @@ app.put('/api/donations/:id', authenticateToken, async (req, res) => {
   }
 });
 
-// Clear all donations (protected, optional)
+// Clear all donations (protected, admin only)
 app.post('/api/donations/clear', authenticateToken, async (req, res) => {
   if (req.user.role !== 'admin') {
     return res.status(403).json({ message: 'Admin access required' });
@@ -268,6 +301,131 @@ app.get('/api/donations/summary', async (req, res) => {
   } catch (error) {
     console.error('Error fetching donation summary:', error);
     res.status(500).json({ message: 'Error fetching donation summary', error: error.message });
+  }
+});
+
+// Expense Routes
+
+// Get all expenses (public)
+app.get('/api/expenses', async (req, res) => {
+  try {
+    const expenses = await Expense.find({});
+    res.json(expenses);
+  } catch (error) {
+    console.error('Error fetching expenses:', error);
+    res.status(500).json({ message: 'Error fetching expenses', error: error.message });
+  }
+});
+
+// Get all expenses for admin (protected)
+app.get('/api/expenses/admin', authenticateToken, async (req, res) => {
+  if (req.user.role !== 'admin') {
+    return res.status(403).json({ message: 'Admin access required' });
+  }
+  try {
+    const expenses = await Expense.find({});
+    res.json(expenses);
+  } catch (error) {
+    console.error('Error fetching admin expenses:', error);
+    res.status(500).json({ message: 'Error fetching admin expenses', error: error.message });
+  }
+});
+
+// Add a new expense (protected)
+app.post('/api/expenses', authenticateToken, async (req, res) => {
+  console.log('Received expense data:', req.body);
+  try {
+    const { recipient, purpose, date, totalAmount, paidAmount } = req.body;
+    if (!recipient || !purpose || !date || !isFinite(totalAmount) || totalAmount < 0 || !isFinite(paidAmount) || paidAmount < 0 || paidAmount > totalAmount) {
+      return res.status(400).json({ message: 'Invalid expense data', details: 'All fields are required, and amounts must be valid numbers (paidAmount ≤ totalAmount)' });
+    }
+    const parsedDate = new Date(date);
+    if (isNaN(parsedDate.getTime())) {
+      return res.status(400).json({ message: 'Invalid date', details: 'date must be a valid date' });
+    }
+    const newExpense = new Expense({
+      recipient,
+      purpose,
+      date: parsedDate,
+      totalAmount,
+      paidAmount,
+      createdBy: req.user.username
+    });
+    await newExpense.save();
+    res.status(201).json(newExpense);
+  } catch (error) {
+    console.error('Error adding expense:', error);
+    res.status(400).json({ message: 'Error adding expense', error: error.message });
+  }
+});
+
+// Update an expense (protected)
+app.put('/api/expenses/:id', authenticateToken, async (req, res) => {
+  console.log('Received update expense data:', req.body);
+  try {
+    const { recipient, purpose, date, totalAmount, paidAmount } = req.body;
+    if (!recipient || !purpose || !date || !isFinite(totalAmount) || totalAmount < 0 || !isFinite(paidAmount) || paidAmount < 0 || paidAmount > totalAmount) {
+      return res.status(400).json({ message: 'Invalid expense data', details: 'All fields are required, and amounts must be valid numbers (paidAmount ≤ totalAmount)' });
+    }
+    const parsedDate = new Date(date);
+    if (isNaN(parsedDate.getTime())) {
+      return res.status(400).json({ message: 'Invalid date', details: 'date must be a valid date' });
+    }
+    const updatedExpense = await Expense.findOneAndUpdate(
+      { _id: req.params.id, createdBy: req.user.username },
+      { recipient, purpose, date: parsedDate, totalAmount, paidAmount },
+      { new: true, runValidators: true }
+    );
+    if (!updatedExpense) {
+      return res.status(404).json({ message: 'Expense not found or unauthorized' });
+    }
+    res.json(updatedExpense);
+  } catch (error) {
+    console.error('Error updating expense:', error);
+    res.status(400).json({ message: 'Error updating expense', error: error.message });
+  }
+});
+
+// Clear all expenses (protected, admin only)
+app.post('/api/expenses/clear', authenticateToken, async (req, res) => {
+  if (req.user.role !== 'admin') {
+    return res.status(403).json({ message: 'Admin access required' });
+  }
+  try {
+    await Expense.deleteMany({});
+    res.status(200).json({ message: 'All expenses cleared' });
+  } catch (error) {
+    console.error('Error clearing expenses:', error);
+    res.status(500).json({ message: 'Error clearing expenses', error: error.message });
+  }
+});
+
+// Get expense summary (public)
+app.get('/api/expenses/summary', async (req, res) => {
+  try {
+    const totalRecords = await Expense.countDocuments({});
+    const pendingCount = await Expense.countDocuments({ status: 'pending' });
+    const completedCount = await Expense.countDocuments({ status: 'completed' });
+    const totalAmountResult = await Expense.aggregate([
+      { $group: { _id: null, total: { $sum: '$totalAmount' } } }
+    ]);
+    const totalAmount = totalAmountResult.length > 0 ? totalAmountResult[0].total : 0;
+    const completedAmountResult = await Expense.aggregate([
+      { $match: { status: 'completed' } },
+      { $group: { _id: null, total: { $sum: '$paidAmount' } } }
+    ]);
+    const completedAmount = completedAmountResult.length > 0 ? completedAmountResult[0].total : 0;
+
+    res.json({
+      totalRecords,
+      pendingCount,
+      completedCount,
+      totalAmount,
+      completedAmount
+    });
+  } catch (error) {
+    console.error('Error fetching expense summary:', error);
+    res.status(500).json({ message: 'Error fetching expense summary', error: error.message });
   }
 });
 
