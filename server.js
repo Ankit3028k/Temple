@@ -6,6 +6,9 @@ import { fileURLToPath } from 'url';
 import cors from 'cors';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import { PDFDocument, rgb } from 'pdf-lib';
+import fs from 'fs/promises';
+import { PythonShell } from 'python-shell';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -62,6 +65,9 @@ const DonationSchema = new mongoose.Schema({
   paidAmount: { type: Number, required: true, min: 0 },
   pendingAmount: { type: Number },
   status: { type: String, enum: ['pending', 'completed'] },
+  contact: { type: String, trim: true },
+  receiptId: { type: String, trim: true },
+  paymentMode: { type: String, enum: ['cash', 'online', 'cheque', 'other'], default: 'cash' },
   createdBy: { type: String, required: true },
 }, { timestamps: true });
 
@@ -93,6 +99,9 @@ const ExpenseSchema = new mongoose.Schema({
   paidAmount: { type: Number, required: true, min: 0 },
   pendingAmount: { type: Number },
   status: { type: String, enum: ['pending', 'completed'] },
+  contact: { type: String, trim: true },
+  receiptId: { type: String, trim: true },
+  paymentMode: { type: String, enum: ['cash', 'online', 'cheque', 'other'], default: 'cash' },
   createdBy: { type: String, required: true },
 }, { timestamps: true });
 
@@ -210,9 +219,9 @@ app.get('/api/donations/admin', authenticateToken, async (req, res) => {
 app.post('/api/donations', authenticateToken, async (req, res) => {
   console.log('Received donation data:', req.body);
   try {
-    const { donor, eventName, eventDate, totalAmount, paidAmount } = req.body;
+    const { donor, eventName, eventDate, totalAmount, paidAmount, contact, receiptId, paymentMode } = req.body;
     if (!donor || !eventName || !eventDate || !isFinite(totalAmount) || totalAmount < 0 || !isFinite(paidAmount) || paidAmount < 0 || paidAmount > totalAmount) {
-      return res.status(400).json({ message: 'Invalid donation data', details: 'All fields are required, and amounts must be valid numbers (paidAmount ≤ totalAmount)' });
+      return res.status(400).json({ message: 'Invalid donation data', details: 'All required fields must be provided, and amounts must be valid numbers (paidAmount ≤ totalAmount)' });
     }
     const parsedDate = new Date(eventDate);
     if (isNaN(parsedDate.getTime())) {
@@ -224,6 +233,9 @@ app.post('/api/donations', authenticateToken, async (req, res) => {
       eventDate: parsedDate,
       totalAmount,
       paidAmount,
+      contact,
+      receiptId,
+      paymentMode,
       createdBy: req.user.username
     });
     await newDonation.save();
@@ -238,17 +250,30 @@ app.post('/api/donations', authenticateToken, async (req, res) => {
 app.put('/api/donations/:id', authenticateToken, async (req, res) => {
   console.log('Received update donation data:', req.body);
   try {
-    const { donor, eventName, eventDate, totalAmount, paidAmount } = req.body;
+    const { donor, eventName, eventDate, totalAmount, paidAmount, contact, receiptId, paymentMode } = req.body;
     if (!donor || !eventName || !eventDate || !isFinite(totalAmount) || totalAmount < 0 || !isFinite(paidAmount) || paidAmount < 0 || paidAmount > totalAmount) {
-      return res.status(400).json({ message: 'Invalid donation data', details: 'All fields are required, and amounts must be valid numbers (paidAmount ≤ totalAmount)' });
+      return res.status(400).json({ message: 'Invalid donation data', details: 'All required fields must be provided, and amounts must be valid numbers (paidAmount ≤ totalAmount)' });
     }
     const parsedDate = new Date(eventDate);
     if (isNaN(parsedDate.getTime())) {
       return res.status(400).json({ message: 'Invalid eventDate', details: 'eventDate must be a valid date' });
     }
+    const pendingAmount = totalAmount - paidAmount;
+    const status = pendingAmount > 0 ? 'pending' : 'completed';
     const updatedDonation = await Donation.findOneAndUpdate(
       { _id: req.params.id, createdBy: req.user.username },
-      { donor, eventName, eventDate: parsedDate, totalAmount, paidAmount },
+      {
+        donor,
+        eventName,
+        eventDate: parsedDate,
+        totalAmount,
+        paidAmount,
+        pendingAmount,
+        status,
+        contact: contact || null, // Convert empty string to null
+        receiptId: receiptId || null, // Convert empty string to null
+        paymentMode: paymentMode || 'cash', // Ensure default
+      },
       { new: true, runValidators: true }
     );
     if (!updatedDonation) {
@@ -335,9 +360,9 @@ app.get('/api/expenses/admin', authenticateToken, async (req, res) => {
 app.post('/api/expenses', authenticateToken, async (req, res) => {
   console.log('Received expense data:', req.body);
   try {
-    const { recipient, purpose, date, totalAmount, paidAmount } = req.body;
+    const { recipient, purpose, date, totalAmount, paidAmount, contact, receiptId, paymentMode } = req.body;
     if (!recipient || !purpose || !date || !isFinite(totalAmount) || totalAmount < 0 || !isFinite(paidAmount) || paidAmount < 0 || paidAmount > totalAmount) {
-      return res.status(400).json({ message: 'Invalid expense data', details: 'All fields are required, and amounts must be valid numbers (paidAmount ≤ totalAmount)' });
+      return res.status(400).json({ message: 'Invalid expense data', details: 'All required fields must be provided, and amounts must be valid numbers (paidAmount ≤ totalAmount)' });
     }
     const parsedDate = new Date(date);
     if (isNaN(parsedDate.getTime())) {
@@ -349,6 +374,9 @@ app.post('/api/expenses', authenticateToken, async (req, res) => {
       date: parsedDate,
       totalAmount,
       paidAmount,
+      contact,
+      receiptId,
+      paymentMode,
       createdBy: req.user.username
     });
     await newExpense.save();
@@ -363,17 +391,19 @@ app.post('/api/expenses', authenticateToken, async (req, res) => {
 app.put('/api/expenses/:id', authenticateToken, async (req, res) => {
   console.log('Received update expense data:', req.body);
   try {
-    const { recipient, purpose, date, totalAmount, paidAmount } = req.body;
+    const { recipient, purpose, date, totalAmount, paidAmount, contact, receiptId, paymentMode } = req.body;
     if (!recipient || !purpose || !date || !isFinite(totalAmount) || totalAmount < 0 || !isFinite(paidAmount) || paidAmount < 0 || paidAmount > totalAmount) {
-      return res.status(400).json({ message: 'Invalid expense data', details: 'All fields are required, and amounts must be valid numbers (paidAmount ≤ totalAmount)' });
+      return res.status(400).json({ message: 'Invalid expense data', details: 'All required fields must be provided, and amounts must be valid numbers (paidAmount ≤ totalAmount)' });
     }
     const parsedDate = new Date(date);
     if (isNaN(parsedDate.getTime())) {
       return res.status(400).json({ message: 'Invalid date', details: 'date must be a valid date' });
     }
+    const pendingAmount = totalAmount - paidAmount;
+    const status = pendingAmount > 0 ? 'pending' : 'completed';
     const updatedExpense = await Expense.findOneAndUpdate(
       { _id: req.params.id, createdBy: req.user.username },
-      { recipient, purpose, date: parsedDate, totalAmount, paidAmount },
+      { recipient, purpose, date: parsedDate, totalAmount, paidAmount, pendingAmount, status, contact, receiptId, paymentMode },
       { new: true, runValidators: true }
     );
     if (!updatedExpense) {
@@ -426,6 +456,120 @@ app.get('/api/expenses/summary', async (req, res) => {
   } catch (error) {
     console.error('Error fetching expense summary:', error);
     res.status(500).json({ message: 'Error fetching expense summary', error: error.message });
+  }
+});
+
+app.post('/api/generate-pdf', authenticateToken, async (req, res) => {
+  const data = req.body; // { type, donor, eventName, eventDate, totalAmount, paidAmount, pendingAmount, status, issueDate }
+  const inputPdf = 'template.pdf'; // Path to your your template PDF (ensure it exists in the server directory)
+  const outputPdf = `output_${Date.now()}.pdf`;
+
+  try {
+    // Call the Python script with arguments
+    await PythonShell.run('modify_pdf.py', {
+      args: [inputPdf, outputPdf, JSON.stringify(data)]
+    });
+
+    // Read the generated PDF
+    const pdfBuffer = await fs.readFile(outputPdf);
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', `attachment; filename=${outputPdf}`);
+    res.send(pdfBuffer);
+
+    // Clean up the output file
+    await fs.unlink(outputPdf);
+  } catch (error) {
+    console.error('Error generating PDF:', error);
+    res.status(500).json({ error: 'Failed to generate PDF' });
+  }
+});
+
+// Receipt Generation Endpoint (optional, kept for reference but not used in client)
+app.get('/api/receipt/:type/:id', authenticateToken, async (req, res) => {
+  if (req.user.role !== 'admin') {
+    return res.status(403).json({ message: 'Admin access required' });
+  }
+
+  const { type, id } = req.params;
+  let item;
+
+  try {
+    if (type === 'donation') {
+      item = await Donation.findById(id);
+      if (!item) {
+        return res.status(404).json({ message: 'Donation not found' });
+      }
+    } else if (type === 'expense') {
+      item = await Expense.findById(id);
+      if (!item) {
+        return res.status(404).json({ message: 'Expense not found' });
+      }
+    } else {
+      return res.status(400).json({ message: 'Invalid type' });
+    }
+
+    // Load the PDF template
+    const templatePath = path.join(__dirname, 'श्री शांतिनाथ दिगम्बर जैन मंदिर.pdf');
+    const existingPdfBytes = await fs.readFile(templatePath);
+
+    const pdfDoc = await PDFDocument.load(existingPdfBytes);
+    const pages = pdfDoc.getPages();
+    const firstPage = pages[0];
+
+    // Define text positions (approximate A4 layout, adjust as needed)
+    const { donor, eventName, eventDate, totalAmount, paidAmount, pendingAmount, status, recipient, purpose, date, contact, receiptId, paymentMode } = item.toObject();
+
+    // Common fields
+    const issueDate = new Date().toLocaleDateString('hi-IN', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
+
+    // Draw dynamic content (using Unicode for Hindi where possible, fallback English)
+    // Note: pdf-lib with Helvetica supports basic Unicode; for full Devanagari, embed font if needed
+    const black = rgb(0, 0, 0);
+
+    if (type === 'donation') {
+      firstPage.drawText(`दानकर्ता: ${donor || 'N/A'}`, { x: 50, y: 650, size: 12, color: black });
+      firstPage.drawText(`कार्यक्रम: ${eventName || 'N/A'}`, { x: 50, y: 630, size: 12, color: black });
+      firstPage.drawText(`तारीख: ${new Date(eventDate).toLocaleDateString('hi-IN')}`, { x: 50, y: 610, size: 12, color: black });
+      firstPage.drawText(`कुल राशि: ₹${totalAmount.toLocaleString('hi-IN')}`, { x: 50, y: 590, size: 12, color: black });
+      firstPage.drawText(`भुगतान राशि: ₹${paidAmount.toLocaleString('hi-IN')}`, { x: 50, y: 570, size: 12, color: black });
+      firstPage.drawText(`बकाया राशि: ₹${pendingAmount.toLocaleString('hi-IN')}`, { x: 50, y: 550, size: 12, color: black });
+      firstPage.drawText(`स्थिति: ${status === 'completed' ? 'पूर्ण' : 'लंबित'}`, { x: 50, y: 530, size: 12, color: black });
+      firstPage.drawText(`संपर्क नंबर: ${contact || 'N/A'}`, { x: 50, y: 510, size: 12, color: black });
+      firstPage.drawText(`रसीद आईडी: ${receiptId || 'N/A'}`, { x: 50, y: 490, size: 12, color: black });
+      firstPage.drawText(`भुगतान मोड: ${paymentMode || 'N/A'}`, { x: 50, y: 470, size: 12, color: black });
+    } else {
+      firstPage.drawText(`प्राप्तकर्ता: ${recipient || 'N/A'}`, { x: 50, y: 650, size: 12, color: black });
+      firstPage.drawText(`उद्देश्य: ${purpose || 'N/A'}`, { x: 50, y: 630, size: 12, color: black });
+      firstPage.drawText(`तारीख: ${new Date(date).toLocaleDateString('hi-IN')}`, { x: 50, y: 610, size: 12, color: black });
+      firstPage.drawText(`कुल राशि: ₹${totalAmount.toLocaleString('hi-IN')}`, { x: 50, y: 590, size: 12, color: black });
+      firstPage.drawText(`भुगतान राशि: ₹${paidAmount.toLocaleString('hi-IN')}`, { x: 50, y: 570, size: 12, color: black });
+      firstPage.drawText(`बकाया राशि: ₹${pendingAmount.toLocaleString('hi-IN')}`, { x: 50, y: 550, size: 12, color: black });
+      firstPage.drawText(`स्थिति: ${status === 'completed' ? 'पूर्ण' : 'लंबित'}`, { x: 50, y: 530, size: 12, color: black });
+      firstPage.drawText(`संपर्क नंबर: ${contact || 'N/A'}`, { x: 50, y: 510, size: 12, color: black });
+      firstPage.drawText(`रसीद आईडी: ${receiptId || 'N/A'}`, { x: 50, y: 490, size: 12, color: black });
+      firstPage.drawText(`भुगतान मोड: ${paymentMode || 'N/A'}`, { x: 50, y: 470, size: 12, color: black });
+    }
+
+    firstPage.drawText(`जारी की तारीख: ${issueDate}`, { x: 50, y: 450, size: 10, color: black });
+    firstPage.drawText('धन्यवाद आपके सहयोग के लिए।', { x: 50, y: 430, size: 10, color: black });
+
+    // Serialize the PDF
+    const pdfBytes = await pdfDoc.save();
+
+    res.set({
+      'Content-Type': 'application/pdf',
+      'Content-Disposition': `attachment; filename="${type}-receipt-${id}.pdf"`,
+      'Content-Length': pdfBytes.length
+    });
+    res.send(Buffer.from(pdfBytes));
+
+  } catch (error) {
+    console.error('Error generating receipt:', error);
+    res.status(500).json({ message: 'Error generating receipt', error: error.message });
   }
 });
 

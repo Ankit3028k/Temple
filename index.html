@@ -152,30 +152,6 @@
       color: var(--accent-color);
       transform: scale(1.1);
     }
-    #shareWhatsAppBtn {
-      position: absolute;
-      top: 0.75rem;
-      right: 2.75rem;
-      width: 2rem;
-      height: 2rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background-color: var(--primary-color);
-      border-radius: 50%;
-      cursor: pointer;
-      transition: background-color 0.2s, transform 0.2s;
-    }
-    #shareWhatsAppBtn:hover {
-      background-color: #5A204A;
-      transform: scale(1.1);
-    }
-    #shareWhatsAppBtn .share-icon {
-      width: 1.25rem;
-      height: 1.25rem;
-      object-fit: contain;
-      filter: brightness(0) invert(1);
-    }
     .modal-header {
       display: flex;
       flex-direction: row;
@@ -273,16 +249,6 @@
         right: 0.5rem;
         font-size: 1rem;
       }
-      #shareWhatsAppBtn {
-        top: 0.5rem;
-        right: 2.25rem;
-        width: 1.75rem;
-        height: 1.75rem;
-      }
-      #shareWhatsAppBtn .share-icon {
-        width: 1rem;
-        height: 1rem;
-      }
       .modal-header {
         gap: 0.5rem;
         padding-bottom: 0.75rem;
@@ -324,15 +290,6 @@
         top: 0.5rem;
         right: 0.5rem;
         font-size: 0.875rem;
-      }
-      #shareWhatsAppBtn {
-        right: 2rem;
-        width: 1.5rem;
-        height: 1.5rem;
-      }
-      #shareWhatsAppBtn .share-icon {
-        width: 0.875rem;
-        height: 0.875rem;
       }
       .modal-header {
         max-width: 95%;
@@ -638,9 +595,6 @@
       <div id="previewModal" class="modal">
         <div class="modal-content">
           <span class="modal-close">&times;</span>
-          <button id="shareWhatsAppBtn">
-            <img src="share.png" alt="Share Icon" class="share-icon">
-          </button>
           <div class="modal-header">
             <img src="logo2.png" alt="Jain Logo" class="logo-placeholder">
             <div class="center-text-wrapper">
@@ -699,7 +653,6 @@
       const modalPendingAmount = document.getElementById('modalPendingAmount');
       const modalStatus = document.getElementById('modalStatus');
       const issueDate = document.getElementById('issueDate');
-      const shareWhatsAppBtn = document.getElementById('shareWhatsAppBtn');
 
       let donations = [];
       let filterValue = 'all';
@@ -731,12 +684,10 @@
       async function generateImage() {
         const modalContent = document.querySelector('.modal-content');
         const modalCloseEl = document.querySelector('.modal-close');
-        const shareBtnEl = document.querySelector('#shareWhatsAppBtn');
 
         const originalBackground = modalContent.style.background;
         modalContent.style.background = '#ffffff';
         modalCloseEl.style.display = 'none';
-        shareBtnEl.style.display = 'none';
 
         try {
           const canvas = await html2canvas(modalContent, {
@@ -747,47 +698,15 @@
 
           modalContent.style.background = originalBackground;
           modalCloseEl.style.display = 'block';
-          shareBtnEl.style.display = 'flex';
 
           return canvas.toDataURL('image/png', 1.0);
         } catch (error) {
           modalContent.style.background = originalBackground;
           modalCloseEl.style.display = 'block';
-          shareBtnEl.style.display = 'flex';
           console.error('Error generating image:', error);
           throw new Error('Failed to generate receipt image.');
         }
       }
-
-      shareWhatsAppBtn.addEventListener('click', async () => {
-        try {
-          const imageDataUri = await generateImage();
-          const imageBlob = await fetch(imageDataUri).then(res => res.blob());
-          const file = new File([imageBlob], `donation-receipt.png`, { type: 'image/png' });
-
-          if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
-            await navigator.share({
-              files: [file],
-              title: 'Donation Receipt - श्री शांतिनाथ दिगम्बर जैन मंदिर',
-              text: `Thank you for your donation! Here is your receipt from श्री शांतिनाथ दिगम्बर जैन मंदिर.`
-            });
-          } else {
-            const message = encodeURIComponent(`Thank you for your donation! Here is your receipt from श्री शांतिनाथ दिगम्बर जैन मंदिर.`);
-            const whatsappUrl = `https://wa.me/?text=${message}`;
-            window.open(whatsappUrl, '_blank');
-            alert('Please manually attach the downloaded image in WhatsApp.');
-            const link = document.createElement('a');
-            link.href = imageDataUri;
-            link.download = `donation-receipt.png`;
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-          }
-        } catch (error) {
-          console.error('Error sharing image:', error);
-          alert('Failed to share receipt: ' + error.message);
-        }
-      });
 
       // Fetch and Render
       async function fetchDonations() {

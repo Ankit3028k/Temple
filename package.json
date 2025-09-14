@@ -17,11 +17,13 @@
   "author": "Gemini",
   "license": "ISC",
   "dependencies": {
+    "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
-    "dotenv": "^16.4.5",
+    "dotenv": "^17.2.2",
     "express": "^4.19.2",
-    "mongoose": "^8.4.4",
     "jsonwebtoken": "^9.0.2",
-    "bcryptjs": "^2.4.3"
+    "mongoose": "^8.4.4",
+    "pdf-lib": "^1.17.1",
+    "python-shell": "^5.0.0"
   }
 }

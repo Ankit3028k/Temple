@@ -3,9 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>श्री शांतिनath दिगम्बर जैन मंदिर - Donations & Expenses</title>
+ <title>श्री शांतिनाथ दिगम्बर जैन मंदिर</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Devanagari:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
@@ -159,16 +158,18 @@
       font-size: clamp(0.8rem, 3.2vw, 0.9rem);
       color: var(--text-color);
       display: flex;
-      flex-direction: column;
+      justify-content: space-between;
     }
     .modal-details p span:first-child {
-      font-weight: 600;
+      font-weight: 500;
       color: var(--primary-color);
       font-size: clamp(0.7rem, 2.8vw, 0.8rem);
+      text-align: left;
     }
     .modal-details p span:last-child {
       color: var(--text-color);
-      font-weight: 400;
+      font-weight: 600;
+      text-align: right;
     }
     .modal-footer {
       text-align: center;
@@ -772,6 +773,23 @@
               <input id="donPaidAmount" type="number" min="0" step="0.01" placeholder="e.g., 100.00" required class="mt-1 w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--accent-color)] transition" />
               <p id="donPaidAmountError" class="error-text hidden">Please enter a valid paid amount (≥ 0 and ≤ total amount).</p>
             </div>
+            <div>
+              <label for="donContact" class="block text-sm font-medium text-[var(--text-color)]">Contact Number</label>
+              <input id="donContact" placeholder="e.g., 9876543210" type="tel" class="mt-1 w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--accent-color)] transition" />
+            </div>
+            <div>
+              <label for="donReceiptId" class="block text-sm font-medium text-[var(--text-color)]">Receipt ID</label>
+              <input id="donReceiptId" placeholder="e.g., 12345" type="text" class="mt-1 w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--accent-color)] transition" />
+            </div>
+            <div>
+              <label for="donPaymentMode" class="block text-sm font-medium text-[var(--text-color)]">Payment Mode</label>
+              <select id="donPaymentMode" class="mt-1 w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--accent-color)] transition">
+                <option value="cash">Cash</option>
+                <option value="online">Online</option>
+                <option value="cheque">Cheque</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
             <div class="flex gap-4">
               <button type="submit" id="donSaveBtn" class="w-full sm:w-auto px-6 py-3 bg-[var(--primary-color)] text-white rounded-lg hover:bg-[#5A204A] transition">Save Donation</button>
               <button type="button" id="donResetBtn" class="w-full sm:w-auto px-6 py-3 bg-gray-200 text-[var(--text-color)] rounded-lg hover:bg-gray-300 transition">Reset</button>
@@ -868,6 +886,25 @@
               <input id="expPaidAmount" type="number" min="0" step="0.01" placeholder="e.g., 100.00" required class="mt-1 w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--accent-color)] transition" />
               <p id="expPaidAmountError" class="error-text hidden">Please enter a valid paid amount (≥ 0 and ≤ total amount).</p>
             </div>
+            <div>
+              <label for="expContact" class="block text-sm font-medium text-[var(--text-color)]">Contact Number</label>
+              <input id="expContact" placeholder="e.g., 9876543210" type="tel" class="mt-1 w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--accent-color)] transition" />
+              <p id="expContactError" class="error-text hidden"></p>
+            </div>
+            <div>
+              <label for="expReceiptId" class="block text-sm font-medium text-[var(--text-color)]">Receipt ID</label>
+              <input id="expReceiptId" placeholder="e.g., 12345" type="text" class="mt-1 w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--accent-color)] transition" />
+              <p id="expReceiptIdError" class="error-text hidden"></p>
+            </div>
+            <div>
+              <label for="expPaymentMode" class="block text-sm font-medium text-[var(--text-color)]">Payment Mode</label>
+              <select id="expPaymentMode" class="mt-1 w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--accent-color)] transition">
+                <option value="cash">Cash</option>
+                <option value="online">Online</option>
+                <option value="cheque">Cheque</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
             <div class="flex gap-4">
               <button type="submit" id="expSaveBtn" class="w-full sm:w-auto px-6 py-3 bg-[var(--primary-color)] text-white rounded-lg hover:bg-[#5A204A] transition">Save Expense</button>
               <button type="button" id="expResetBtn" class="w-full sm:w-auto px-6 py-3 bg-gray-200 text-[var(--text-color)] rounded-lg hover:bg-gray-300 transition">Reset</button>
@@ -911,780 +948,881 @@
         </section>
       </div>
     </div>
-
-    <div id="previewModal" class="modal">
-      <div class="modal-content">
-        <span class="modal-close">&times;</span>
-        <button id="shareWhatsAppBtn">
-          <img src="share.png" alt="Share Icon" class="share-icon">
-        </button>
-        <div class="modal-header">
-          <img src="logo2.png" alt="Jain Logo" class="logo-placeholder">
-          <div class="center-text-wrapper">
-            <div class="text-container">
-              <h2 id="modalTitle">श्री शांतिनाथ दिगम्बर जैन मंदिर</h2>
-              <p id="modalSubtitle">दान रसीद</p>
-            </div>
-          </div>
-          <div class="spacer"></div>
-        </div>
-        <div class="modal-details">
-          <p><span id="modalLabel1">Donor Name</span><span id="modalField1"></span></p>
-          <p><span id="modalLabel2">Event Name</span><span id="modalField2"></span></p>
-          <p><span>Event Date</span><span id="modalEventDate"></span></p>
-          <p><span>Total Amount</span><span id="modalTotalAmount"></span></p>
-          <p><span>Paid Amount</span><span id="modalPaidAmount"></span></p>
-          <p><span>Pending Amount</span><span id="modalPendingAmount"></span></p>
-          <p><span>Status</span><span id="modalStatus"></span></p>
-        </div>
-        <div class="modal-footer">
-          <p id="modalThankYou">Thank you for your support.</p>
-          <p>Issued on: <span id="issueDate"></span></p>
+<div id="previewModal" class="modal">
+  <div class="modal-content">
+    <span class="modal-close">&times;</span>
+    <button id="shareWhatsAppBtn">
+      <img src="share.png" alt="Share Icon" class="share-icon">
+    </button>
+    <div class="modal-header">
+      <img src="logo2.png" alt="Jain Logo" class="logo-placeholder">
+      <div class="center-text-wrapper">
+        <div class="text-container">
+          <h2 id="modalTitle">श्री शांतिनाथ दिगम्बर जैन मंदिर</h2>
+          <p id="modalSubtitle">दान रसीद</p>
         </div>
       </div>
+      <div class="spacer"></div>
     </div>
+    <div class="modal-details">
+      <p><span id="modalLabel1">Donor Name</span><span id="modalField1"></span></p>
+      <p><span id="modalLabel2">Event Name</span><span id="modalField2"></span></p>
+      <p><span>Event Date</span><span id="modalEventDate"></span></p>
+      <p><span>Total Amount</span><span id="modalTotalAmount"></span></p>
+      <p><span>Paid Amount</span><span id="modalPaidAmount"></span></p>
+      <p><span>Pending Amount</span><span id="modalPendingAmount"></span></p>
+      <p><span>Status</span><span id="modalStatus"></span></p>
+      <p><span>Contact Number</span><span id="modalContact"></span></p>
+      <p><span>Receipt ID</span><span id="modalReceiptId"></span></p>
+      <p><span>Payment Mode</span><span id="modalPaymentMode"></span></p>
+    </div>
+    <div class="modal-footer">
+      <p id="modalThankYou">Thank you for your support.</p>
+      <p>Issued on: <span id="issueDate"></span></p>
+    </div>
+  </div>
+</div>
   </main>
 
   <footer class="bg-[var(--primary-color)] text-white text-center p-4">
     <p>&copy; 2025 श्री शांतिनाथ दिगम्बर जैन मंदिर. All rights reserved.</p>
   </footer>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    function formatCurrency(n) {
+      return new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 2 }).format(Number(n) || 0);
+    }
 
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      function formatCurrency(n) {
-        return new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 2 }).format(Number(n) || 0);
-      }
+    const donationsTab = document.getElementById('donationsTab');
+    const expensesTab = document.getElementById('expensesTab');
+    const donationsContent = document.getElementById('donationsContent');
+    const expensesContent = document.getElementById('expensesContent');
 
-      const donationsTab = document.getElementById('donationsTab');
-      const expensesTab = document.getElementById('expensesTab');
-      const donationsContent = document.getElementById('donationsContent');
-      const expensesContent = document.getElementById('expensesContent');
+    function switchTab(tab) {
+      [donationsTab, expensesTab].forEach(t => t.classList.remove('active'));
+      [donationsContent, expensesContent].forEach(c => c.classList.add('hidden'));
+      tab.classList.add('active');
+      if (tab === donationsTab) donationsContent.classList.remove('hidden');
+      if (tab === expensesTab) expensesContent.classList.remove('hidden');
+    }
 
-      function switchTab(tab) {
-        [donationsTab, expensesTab].forEach(t => t.classList.remove('active'));
-        [donationsContent, expensesContent].forEach(c => c.classList.add('hidden'));
-        tab.classList.add('active');
-        if (tab === donationsTab) donationsContent.classList.remove('hidden');
-        if (tab === expensesTab) expensesContent.classList.remove('hidden');
-      }
+    donationsTab.addEventListener('click', () => switchTab(donationsTab));
+    expensesTab.addEventListener('click', () => switchTab(expensesTab));
 
-      donationsTab.addEventListener('click', () => switchTab(donationsTab));
-      expensesTab.addEventListener('click', () => switchTab(expensesTab));
+    // Donations variables
+    const donForm = document.getElementById('donationForm');
+    const donDonor = document.getElementById('donDonor');
+    const donEventName = document.getElementById('donEventName');
+    const donEventDate = document.getElementById('donEventDate');
+    const donTotalAmount = document.getElementById('donTotalAmount');
+    const donPaidAmount = document.getElementById('donPaidAmount');
+    const donContact = document.getElementById('donContact');
+    const donReceiptId = document.getElementById('donReceiptId');
+    const donPaymentMode = document.getElementById('donPaymentMode');
+    const donDonorError = document.getElementById('donDonorError');
+    const donEventNameError = document.getElementById('donEventNameError');
+    const donEventDateError = document.getElementById('donEventDateError');
+    const donTotalAmountError = document.getElementById('donTotalAmountError');
+    const donPaidAmountError = document.getElementById('donPaidAmountError');
+    const donContactError = document.getElementById('donContactError');
+    const donReceiptIdError = document.getElementById('donReceiptIdError');
+    const donEditingId = document.getElementById('donEditingId');
+    const donTbody = document.getElementById('donTbody');
+    const donEmpty = document.getElementById('donEmpty');
+    const donTotalCount = document.getElementById('donTotalCount');
+    const donPendingCount = document.getElementById('donPendingCount');
+    const donCompletedCount = document.getElementById('donCompletedCount');
+    const donTotalAmountDisplay = document.getElementById('donTotalAmountDisplay');
+    const donSearch = document.getElementById('donSearch');
+    const donFilterSel = document.getElementById('donFilterStatus');
+    const donExportBtn = document.getElementById('donExportCsv');
+    const donBackupBtn = document.getElementById('donBackupBtn');
 
-      // Donations variables
-      const donForm = document.getElementById('donationForm');
-      const donDonor = document.getElementById('donDonor');
-      const donEventName = document.getElementById('donEventName');
-      const donEventDate = document.getElementById('donEventDate');
-      const donTotalAmount = document.getElementById('donTotalAmount');
-      const donPaidAmount = document.getElementById('donPaidAmount');
-      const donDonorError = document.getElementById('donDonorError');
-      const donEventNameError = document.getElementById('donEventNameError');
-      const donEventDateError = document.getElementById('donEventDateError');
-      const donTotalAmountError = document.getElementById('donTotalAmountError');
-      const donPaidAmountError = document.getElementById('donPaidAmountError');
-      const donEditingId = document.getElementById('donEditingId');
-      const donTbody = document.getElementById('donTbody');
-      const donEmpty = document.getElementById('donEmpty');
-      const donTotalCount = document.getElementById('donTotalCount');
-      const donPendingCount = document.getElementById('donPendingCount');
-      const donCompletedCount = document.getElementById('donCompletedCount');
-      const donTotalAmountDisplay = document.getElementById('donTotalAmountDisplay');
-      const donSearch = document.getElementById('donSearch');
-      const donFilterSel = document.getElementById('donFilterStatus');
-      const donExportBtn = document.getElementById('donExportCsv');
-      const donBackupBtn = document.getElementById('donBackupBtn');
+    // Expenses variables
+    const expForm = document.getElementById('expenseForm');
+    const expRecipient = document.getElementById('expRecipient');
+    const expPurpose = document.getElementById('expPurpose');
+    const expDate = document.getElementById('expDate');
+    const expTotalAmount = document.getElementById('expTotalAmount');
+    const expPaidAmount = document.getElementById('expPaidAmount');
+    const expContact = document.getElementById('expContact');
+    const expReceiptId = document.getElementById('expReceiptId');
+    const expPaymentMode = document.getElementById('expPaymentMode');
+    const expRecipientError = document.getElementById('expRecipientError');
+    const expPurposeError = document.getElementById('expPurposeError');
+    const expDateError = document.getElementById('expDateError');
+    const expTotalAmountError = document.getElementById('expTotalAmountError');
+    const expPaidAmountError = document.getElementById('expPaidAmountError');
+    const expContactError = document.getElementById('expContactError');
+    const expReceiptIdError = document.getElementById('expReceiptIdError');
+    const expEditingId = document.getElementById('expEditingId');
+    const expTbody = document.getElementById('expTbody');
+    const expEmpty = document.getElementById('expEmpty');
+    const expTotalCount = document.getElementById('expTotalCount');
+    const expPendingCount = document.getElementById('expPendingCount');
+    const expCompletedCount = document.getElementById('expCompletedCount');
+    const expTotalAmountDisplay = document.getElementById('expTotalAmountDisplay');
+    const expSearch = document.getElementById('expSearch');
+    const expFilterSel = document.getElementById('expFilterStatus');
+    const expExportBtn = document.getElementById('expExportCsv');
+    const expBackupBtn = document.getElementById('expBackupBtn');
 
-      // Expenses variables
-      const expForm = document.getElementById('expenseForm');
-      const expRecipient = document.getElementById('expRecipient');
-      const expPurpose = document.getElementById('expPurpose');
-      const expDate = document.getElementById('expDate');
-      const expTotalAmount = document.getElementById('expTotalAmount');
-      const expPaidAmount = document.getElementById('expPaidAmount');
-      const expRecipientError = document.getElementById('expRecipientError');
-      const expPurposeError = document.getElementById('expPurposeError');
-      const expDateError = document.getElementById('expDateError');
-      const expTotalAmountError = document.getElementById('expTotalAmountError');
-      const expPaidAmountError = document.getElementById('expPaidAmountError');
-      const expEditingId = document.getElementById('expEditingId');
-      const expTbody = document.getElementById('expTbody');
-      const expEmpty = document.getElementById('expEmpty');
-      const expTotalCount = document.getElementById('expTotalCount');
-      const expPendingCount = document.getElementById('expPendingCount');
-      const expCompletedCount = document.getElementById('expCompletedCount');
-      const expTotalAmountDisplay = document.getElementById('expTotalAmountDisplay');
-      const expSearch = document.getElementById('expSearch');
-      const expFilterSel = document.getElementById('expFilterStatus');
-      const expExportBtn = document.getElementById('expExportCsv');
-      const expBackupBtn = document.getElementById('expBackupBtn');
+    // Shared modal
+    const previewModal = document.getElementById('previewModal');
+    const modalClose = document.querySelector('.modal-close');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalSubtitle = document.getElementById('modalSubtitle');
+    const modalLabel1 = document.getElementById('modalLabel1');
+    const modalLabel2 = document.getElementById('modalLabel2');
+    const modalField1 = document.getElementById('modalField1');
+    const modalField2 = document.getElementById('modalField2');
+    const modalEventDate = document.getElementById('modalEventDate');
+    const modalTotalAmount = document.getElementById('modalTotalAmount');
+    const modalPaidAmount = document.getElementById('modalPaidAmount');
+    const modalPendingAmount = document.getElementById('modalPendingAmount');
+    const modalStatus = document.getElementById('modalStatus');
+    const modalContact = document.getElementById('modalContact');
+    const modalReceiptId = document.getElementById('modalReceiptId');
+    const modalPaymentMode = document.getElementById('modalPaymentMode');
+    const modalThankYou = document.getElementById('modalThankYou');
+    const issueDate = document.getElementById('issueDate');
+    const shareWhatsAppBtn = document.getElementById('shareWhatsAppBtn');
+    const headerNav = document.getElementById('headerNav');
 
-      // Shared modal
-      const previewModal = document.getElementById('previewModal');
-      const modalClose = document.querySelector('.modal-close');
-      const modalTitle = document.getElementById('modalTitle');
-      const modalSubtitle = document.getElementById('modalSubtitle');
-      const modalLabel1 = document.getElementById('modalLabel1');
-      const modalLabel2 = document.getElementById('modalLabel2');
-      const modalField1 = document.getElementById('modalField1');
-      const modalField2 = document.getElementById('modalField2');
-      const modalEventDate = document.getElementById('modalEventDate');
-      const modalTotalAmount = document.getElementById('modalTotalAmount');
-      const modalPaidAmount = document.getElementById('modalPaidAmount');
-      const modalPendingAmount = document.getElementById('modalPendingAmount');
-      const modalStatus = document.getElementById('modalStatus');
-      const modalThankYou = document.getElementById('modalThankYou');
-      const issueDate = document.getElementById('issueDate');
-      const shareWhatsAppBtn = document.getElementById('shareWhatsAppBtn');
-      const headerNav = document.getElementById('headerNav');
+    let donations = [];
+    let expenses = [];
+    let donFilterStatus = 'all';
+    let donSearchText = '';
+    let expFilterStatus = 'all';
+    let expSearchText = '';
+    let currentItem = null;
+    let currentType = null;
 
-      let donations = [];
-      let expenses = [];
-      let donFilterStatus = 'all';
-      let donSearchText = '';
-      let expFilterStatus = 'all';
-      let expSearchText = '';
+    donEventDate.valueAsDate = new Date();
+    expDate.valueAsDate = new Date();
 
-      donEventDate.valueAsDate = new Date();
-      expDate.valueAsDate = new Date();
+    const token = localStorage.getItem('token');
+    if (token) {
+      const logoutA = document.createElement('a');
+      logoutA.href = '#';
+      logoutA.className = 'icon-btn';
+      logoutA.title = 'Logout';
+      logoutA.innerHTML = `
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M17 16l4-4m0 0l-4-4m4 4H7m5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h3a3 3 0 013 3v1" />
+        </svg>
+      `;
+      logoutA.addEventListener('click', (e) => {
+        e.preventDefault();
+        localStorage.removeItem('token');
+        window.location.href = '/login.html';
+      });
+      headerNav.appendChild(logoutA);
+    } else {
+      const loginA = document.createElement('a');
+      loginA.href = '/login.html';
+      loginA.className = 'icon-btn';
+      loginA.title = 'Admin Login';
+      loginA.innerHTML = `
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-3.33 0-6 2.67-6 6v1h12v-1c0-3.33-2.67-6-6-6z" />
+        </svg>
+      `;
+      headerNav.appendChild(loginA);
+    }
 
-      const token = localStorage.getItem('token');
-      if (token) {
-        const logoutA = document.createElement('a');
-        logoutA.href = '#';
-        logoutA.className = 'icon-btn';
-        logoutA.title = 'Logout';
-        logoutA.innerHTML = `
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M17 16l4-4m0 0l-4-4m4 4H7m5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h3a3 3 0 013 3v1" />
-          </svg>
-        `;
-        logoutA.addEventListener('click', (e) => {
-          e.preventDefault();
-          localStorage.removeItem('token');
-          window.location.href = '/login.html';
-        });
-        headerNav.appendChild(logoutA);
+    function openModal(item, type) {
+      console.log('Opening modal with item:', item); // Debug log
+      currentItem = item;
+      currentType = type;
+      modalTitle.textContent = 'श्री शांतिनाथ दिगम्बर जैन मंदिर';
+      if (type === 'donation') {
+        modalSubtitle.textContent = 'दान रसीद';
+        modalLabel1.textContent = 'Donor Name';
+        modalLabel2.textContent = 'Event Name';
+        modalField1.textContent = item.donor || 'N/A';
+        modalField2.textContent = item.eventName || 'N/A';
+        modalThankYou.textContent = 'Thank you for your support.';
       } else {
-        const loginA = document.createElement('a');
-        loginA.href = '/login.html';
-        loginA.className = 'icon-btn';
-        loginA.title = 'Admin Login';
-        loginA.innerHTML = `
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-3.33 0-6 2.67-6 6v1h12v-1c0-3.33-2.67-6-6-6z" />
-          </svg>
-        `;
-        headerNav.appendChild(loginA);
+        modalSubtitle.textContent = 'व्यय रसीद';
+        modalLabel1.textContent = 'Recipient Name';
+        modalLabel2.textContent = 'Purpose';
+        modalField1.textContent = item.recipient || 'N/A';
+        modalField2.textContent = item.purpose || 'N/A';
+        modalThankYou.textContent = 'Thank you for your service.';
       }
+      modalEventDate.textContent = new Date(item.date || item.eventDate).toISOString().split('T')[0] || 'N/A';
+      modalTotalAmount.textContent = formatCurrency(parseFloat(item.totalAmount));
+      modalPaidAmount.textContent = formatCurrency(parseFloat(item.paidAmount));
+      const pendingAmount = (parseFloat(item.totalAmount) || 0) - (parseFloat(item.paidAmount) || 0);
+      modalPendingAmount.textContent = formatCurrency(pendingAmount);
+      modalStatus.textContent = item.status ? (item.status.charAt(0).toUpperCase() + item.status.slice(1)) : 'N/A';
+      modalContact.textContent = item.contact || 'N/A';
+      modalReceiptId.textContent = item.receiptId || 'N/A';
+      modalPaymentMode.textContent = item.paymentMode ? (item.paymentMode.charAt(0).toUpperCase() + item.paymentMode.slice(1)) : 'N/A';
+      issueDate.textContent = new Date().toLocaleDateString('en-IN', { year: 'numeric', month: 'long', day: 'numeric' });
+      previewModal.style.display = 'flex';
+    }
 
-      function openModal(item, type) {
-        modalTitle.textContent = 'श्री शांतिनाथ दिगम्बर जैन मंदिर';
-        if (type === 'donation') {
-          modalSubtitle.textContent = 'दान रसीद';
-          modalLabel1.textContent = 'Donor Name';
-          modalLabel2.textContent = 'Event Name';
-          modalField1.textContent = item.donor;
-          modalField2.textContent = item.eventName || 'None';
-          modalThankYou.textContent = 'Thank you for your support.';
-        } else {
-          modalSubtitle.textContent = 'व्यय रसीद';
-          modalLabel1.textContent = 'Recipient Name';
-          modalLabel2.textContent = 'Purpose';
-          modalField1.textContent = item.recipient;
-          modalField2.textContent = item.purpose || 'None';
-          modalThankYou.textContent = 'Thank you for your service.';
-        }
-        modalEventDate.textContent = new Date(item.date || item.eventDate).toISOString().split('T')[0];
-        modalTotalAmount.textContent = formatCurrency(Number(item.totalAmount));
-        modalPaidAmount.textContent = formatCurrency(Number(item.paidAmount));
-        modalPendingAmount.textContent = formatCurrency(Number(item.pendingAmount));
-        modalStatus.textContent = item.status.charAt(0).toUpperCase() + item.status.slice(1);
-        issueDate.textContent = new Date().toLocaleDateString('en-IN', { year: 'numeric', month: 'long', day: 'numeric' });
-        previewModal.style.display = 'flex';
-      }
+    modalClose.addEventListener('click', () => {
+      previewModal.style.display = 'none';
+      currentItem = null;
+      currentType = null;
+    });
 
-      modalClose.addEventListener('click', () => {
+    previewModal.addEventListener('click', (e) => {
+      if (e.target === previewModal) {
         previewModal.style.display = 'none';
-      });
+        currentItem = null;
+        currentType = null;
+      }
+    });
 
-      previewModal.addEventListener('click', (e) => {
-        if (e.target === previewModal) {
-          previewModal.style.display = 'none';
-        }
-      });
-
-      async function generateImage() {
-        const modalContent = document.querySelector('.modal-content');
-        const modalCloseEl = document.querySelector('.modal-close');
-        const shareBtnEl = document.querySelector('#shareWhatsAppBtn');
-
-        const originalBackground = modalContent.style.background;
-        modalContent.style.background = '#ffffff';
-        modalCloseEl.style.display = 'none';
-        shareBtnEl.style.display = 'none';
-
-        try {
-          const canvas = await html2canvas(modalContent, {
-            scale: 2,
-            useCORS: true,
-            backgroundColor: '#ffffff'
-          });
-
-          modalContent.style.background = originalBackground;
-          modalCloseEl.style.display = 'block';
-          shareBtnEl.style.display = 'flex';
-
-          return canvas.toDataURL('image/png', 1.0);
-        } catch (error) {
-          modalContent.style.background = originalBackground;
-          modalCloseEl.style.display = 'block';
-          shareBtnEl.style.display = 'flex';
-          console.error('Error generating image:', error);
-          throw new Error('Failed to generate receipt image.');
-        }
+    shareWhatsAppBtn.addEventListener('click', async () => {
+      if (!currentItem || !currentType) {
+        alert('No receipt data available.');
+        return;
       }
 
-      shareWhatsAppBtn.addEventListener('click', async () => {
-        try {
-          const imageDataUri = await generateImage();
-          const imageBlob = await fetch(imageDataUri).then(res => res.blob());
-          const file = new File([imageBlob], `receipt.png`, { type: 'image/png' });
-
-          if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
-            await navigator.share({
-              files: [file],
-              title: 'Receipt - श्री शांतिनाथ दिगम्बर जैन मंदिर',
-              text: `Here is your receipt from श्री शांतिनाथ दिगम्बर जैन मंदिर.`
-            });
-          } else {
-            const message = encodeURIComponent(`Here is your receipt from श्री शांतिनाथ दिगम्बर जैन मंदिर.`);
-            const whatsappUrl = `https://wa.me/?text=${message}`;
-            window.open(whatsappUrl, '_blank');
-            alert('Please manually attach the downloaded image in WhatsApp.');
-            const link = document.createElement('a');
-            link.href = imageDataUri;
-            link.download = `receipt.png`;
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-          }
-        } catch (error) {
-          console.error('Error sharing image:', error);
-          alert('Failed to share receipt: ' + error.message);
-        }
-      });
-
-      function getAuthHeaders() {
-        const token = localStorage.getItem('token');
-        return token ? { 'Authorization': `Bearer ${token}` } : {};
-      }
-
-      async function fetchDonations() {
-        try {
-          const response = await fetch('https://temple-4bpo.onrender.com/api/donations/admin', {
-            headers: getAuthHeaders()
-          });
-          if (!response.ok) {
-            if (response.status === 401 || response.status === 403) {
-              alert('Session expired or unauthorized. Please log in again.');
-              window.location.href = '/login.html';
-              return;
-            }
-            const errorText = await response.text();
-            throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
-          }
-          donations = await response.json();
-          renderDonations();
-        } catch (error) {
-          console.error('Error fetching donations:', error);
-          alert('Failed to fetch donations: ' + error.message);
-        }
-      }
-
-      async function fetchExpenses() {
-        try {
-          const response = await fetch('https://temple-4bpo.onrender.com/api/expenses/admin', {
-            headers: getAuthHeaders()
-          });
-          if (!response.ok) {
-            if (response.status === 401 || response.status === 403) {
-              alert('Session expired or unauthorized. Please log in again.');
-              window.location.href = '/login.html';
-              return;
-            }
-            const errorText = await response.text();
-            throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
-          }
-          expenses = await response.json();
-          renderExpenses();
-        } catch (error) {
-          console.error('Error fetching expenses:', error);
-          alert('Failed to fetch expenses: ' + error.message);
-        }
-      }
-
-      function renderDonations() {
-        const q = donSearchText.trim().toLowerCase();
-        const view = donations.filter(d => {
-          const okStatus = donFilterStatus === 'all' ? true : d.status === donFilterStatus;
-          const okSearch = !q ? true : (d.donor.toLowerCase().includes(q) || (d.eventName || '').toLowerCase().includes(q));
-          return okStatus && okSearch;
-        });
-
-        donTotalCount.textContent = donations.length;
-        donPendingCount.textContent = donations.filter(d => d.status === 'pending').length;
-        donCompletedCount.textContent = donations.filter(d => d.status === 'completed').length;
-        donTotalAmountDisplay.textContent = formatCurrency(donations.reduce((s, d) => s + Number(d.totalAmount || 0), 0));
-
-        donTbody.innerHTML = '';
-        if (view.length === 0) {
-          donEmpty.classList.remove('hidden');
-          return;
-        }
-        donEmpty.classList.add('hidden');
-        for (const d of view) {
-          const tr = document.createElement('tr');
-          tr.className = 'border-t border-gray-200 hover:bg-gray-50 transition';
-          tr.innerHTML = `
-            <td class="py-4 px-4 font-medium">${escapeHtml(d.donor)}</td>
-            <td class="py-4 px-4">${escapeHtml(d.eventName || 'None')}</td>
-            <td class="py-4 px-4">${escapeHtml(new Date(d.eventDate).toISOString().split('T')[0])}</td>
-            <td class="py-4 px-4">${formatCurrency(Number(d.totalAmount))}</td>
-            <td class="py-4 px-4">
-              <span class="inline-block px-3 py-1 text-xs font-medium rounded-full ${d.status === 'completed' ? 'bg-[var(--accent-color)] text-[var(--primary-color)]' : 'bg-[#F0E68C] text-[var(--primary-color)]'}">
-                ${d.status.charAt(0).toUpperCase() + d.status.slice(1)}
-              </span>
-            </td>
-            <td class="py-4 px-4 flex gap-2">
-              <button class="px-4 py-1 bg-[var(--accent-color)] text-[var(--primary-color)] rounded-lg hover:bg-[#F0E68C] transition" data-edit="${d._id}" data-type="donation">Edit</button>
-              <button class="px-2 py-1 text-[var(--primary-color)] rounded-lg hover:text-[#5A204A] transition" data-preview="${d._id}" data-type="donation">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                </svg>
-              </button>
-            </td>
-          `;
-          donTbody.appendChild(tr);
-        }
-      }
-
-      function renderExpenses() {
-        const q = expSearchText.trim().toLowerCase();
-        const view = expenses.filter(e => {
-          const okStatus = expFilterStatus === 'all' ? true : e.status === expFilterStatus;
-          const okSearch = !q ? true : (e.recipient.toLowerCase().includes(q) || (e.purpose || '').toLowerCase().includes(q));
-          return okStatus && okSearch;
-        });
-
-        expTotalCount.textContent = expenses.length;
-        expPendingCount.textContent = expenses.filter(e => e.status === 'pending').length;
-        expCompletedCount.textContent = expenses.filter(e => e.status === 'completed').length;
-        expTotalAmountDisplay.textContent = formatCurrency(expenses.reduce((s, e) => s + Number(e.totalAmount || 0), 0));
-
-        expTbody.innerHTML = '';
-        if (view.length === 0) {
-          expEmpty.classList.remove('hidden');
-          return;
-        }
-        expEmpty.classList.add('hidden');
-        for (const e of view) {
-          const tr = document.createElement('tr');
-          tr.className = 'border-t border-gray-200 hover:bg-gray-50 transition';
-          tr.innerHTML = `
-            <td class="py-4 px-4 font-medium">${escapeHtml(e.recipient)}</td>
-            <td class="py-4 px-4">${escapeHtml(e.purpose || 'None')}</td>
-            <td class="py-4 px-4">${escapeHtml(new Date(e.date).toISOString().split('T')[0])}</td>
-            <td class="py-4 px-4">${formatCurrency(Number(e.totalAmount))}</td>
-            <td class="py-4 px-4">
-              <span class="inline-block px-3 py-1 text-xs font-medium rounded-full ${e.status === 'completed' ? 'bg-[var(--accent-color)] text-[var(--primary-color)]' : 'bg-[#F0E68C] text-[var(--primary-color)]'}">
-                ${e.status.charAt(0).toUpperCase() + e.status.slice(1)}
-              </span>
-            </td>
-            <td class="py-4 px-4 flex gap-2">
-              <button class="px-4 py-1 bg-[var(--accent-color)] text-[var(--primary-color)] rounded-lg hover:bg-[#F0E68C] transition" data-edit="${e._id}" data-type="expense">Edit</button>
-              <button class="px-2 py-1 text-[var(--primary-color)] rounded-lg hover:text-[#5A204A] transition" data-preview="${e._id}" data-type="expense">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                </svg>
-              </button>
-            </td>
-          `;
-          expTbody.appendChild(tr);
-        }
-      }
-
-      function escapeHtml(s) {
-        return String(s).replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;');
-      }
-
-      // Donations logic
-      function donClearErrors() {
-        donDonorError.classList.add('hidden');
-        donEventNameError.classList.add('hidden');
-        donEventDateError.classList.add('hidden');
-        donTotalAmountError.classList.add('hidden');
-        donPaidAmountError.classList.add('hidden');
-      }
-
-      donTotalAmount.addEventListener('input', () => {
-        const value = donTotalAmount.value;
-        donTotalAmountError.textContent = !value ? 'Total amount is required.' : Number(value) < 0 ? 'Total amount must be ≥ 0.' : '';
-        donTotalAmountError.classList.toggle('hidden', !donTotalAmountError.textContent);
-        donValidatePaidAmount();
-      });
-
-      donPaidAmount.addEventListener('input', donValidatePaidAmount);
-
-      function donValidatePaidAmount() {
-        const total = Number(donTotalAmount.value);
-        const paid = Number(donPaidAmount.value);
-        donPaidAmountError.textContent = !donPaidAmount.value ? 'Paid amount is required.' : paid < 0 ? 'Paid amount must be ≥ 0.' : isFinite(total) && paid > total ? 'Paid amount cannot exceed total amount.' : '';
-        donPaidAmountError.classList.toggle('hidden', !donPaidAmountError.textContent);
-      }
-
-      donForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        donClearErrors();
-
+      try {
+        const issueDate = new Date().toISOString().split('T')[0];
         const data = {
-          donor: donDonor.value ? donDonor.value.trim() : '',
-          eventName: donEventName.value ? donEventName.value.trim() : '',
-          eventDate: donEventDate.value,
-          totalAmount: Number(donTotalAmount.value),
-          paidAmount: Number(donPaidAmount.value)
+          ...currentItem,
+          issueDate,
+          type: currentType,
+          eventDate: currentType === 'donation' ? currentItem.eventDate : undefined,
+          date: currentType === 'expense' ? currentItem.date : undefined,
+          pendingAmount: currentItem.totalAmount - currentItem.paidAmount,
+          contact: currentItem.contact || '',
+          receiptId: currentItem.receiptId || '',
+          paymentMode: currentItem.paymentMode || 'cash'
         };
 
-        let hasError = false;
-        if (!data.donor) {
-          donDonorError.classList.remove('hidden');
-          hasError = true;
-        }
-        if (!data.eventName) {
-          donEventNameError.classList.remove('hidden');
-          hasError = true;
-        }
-        if (!data.eventDate || isNaN(new Date(data.eventDate).getTime())) {
-          donEventDateError.classList.remove('hidden');
-          hasError = true;
-        }
-        if (!donTotalAmount.value || isNaN(data.totalAmount) || data.totalAmount < 0) {
-          donTotalAmountError.textContent = !donTotalAmount.value ? 'Total amount is required.' : 'Total amount must be ≥ 0.';
-          donTotalAmountError.classList.remove('hidden');
-          hasError = true;
-        }
-        if (!donPaidAmount.value || isNaN(data.paidAmount) || data.paidAmount < 0) {
-          donPaidAmountError.textContent = !donPaidAmount.value ? 'Paid amount is required.' : 'Paid amount must be ≥ 0.';
-          donPaidAmountError.classList.remove('hidden');
-          hasError = true;
-        }
-        if (isFinite(data.totalAmount) && isFinite(data.paidAmount) && data.paidAmount > data.totalAmount) {
-          donPaidAmountError.textContent = 'Paid amount cannot exceed total amount.';
-          donPaidAmountError.classList.remove('hidden');
-          hasError = true;
+        console.log('Sending PDF data:', data); // Debug log to verify data sent to backend
+
+        const response = await fetch('https://temple-4bpo.onrender.com/api/generate-pdf', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+          },
+          body: JSON.stringify(data)
+        });
+
+        if (!response.ok) {
+          throw new Error(`Failed to generate PDF: ${response.statusText}`);
         }
 
-        if (hasError) {
-          alert('Please fix the errors in the form.');
-          return;
-        }
-
-        const id = donEditingId.value;
-        try {
-          const url = id ? `https://temple-4bpo.onrender.com/api/donations/${id}` : 'https://temple-4bpo.onrender.com/api/donations';
-          const method = id ? 'PUT' : 'POST';
-          const response = await fetch(url, {
-            method,
-            headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
-            body: JSON.stringify(data)
-          });
-          if (!response.ok) {
-            const errorText = await response.text();
-            throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
-          }
-          donResetForm();
-          fetchDonations();
-        } catch (error) {
-          console.error('Error saving donation:', error);
-          alert('Failed to save donation: ' + error.message);
-        }
-      });
-
-      function donResetForm() {
-        donForm.reset();
-        donEditingId.value = '';
-        donEventDate.valueAsDate = new Date();
-        donClearErrors();
-      }
-      document.getElementById('donResetBtn').addEventListener('click', donResetForm);
-
-      donTbody.addEventListener('click', (e) => {
-        const t = e.target.closest('button');
-        if (!t) return;
-        const id = t.dataset.edit || t.dataset.preview;
-        const d = donations.find(x => x._id === id);
-        if (!d) return;
-        if (t.dataset.edit) {
-          donEditingId.value = d._id;
-          donDonor.value = d.donor;
-          donEventName.value = d.eventName;
-          donEventDate.value = new Date(d.eventDate).toISOString().split('T')[0];
-          donTotalAmount.value = d.totalAmount;
-          donPaidAmount.value = d.paidAmount;
-          donClearErrors();
-          window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-        if (t.dataset.preview) {
-          openModal(d, 'donation');
-        }
-      });
-
-      donSearch.addEventListener('input', () => {
-        donSearchText = donSearch.value;
-        renderDonations();
-      });
-
-      donFilterSel.addEventListener('change', () => {
-        donFilterStatus = donFilterSel.value;
-        renderDonations();
-      });
-
-      donExportBtn.addEventListener('click', () => {
-        if (!donations.length) {
-          alert('No data to export');
-          return;
-        }
-        const csv = toCsv(donations, 'donation');
-        download('temple-donations.csv', csv, 'text/csv;charset=utf-8');
-      });
-
-      donBackupBtn.addEventListener('click', async () => {
-        if (!donations.length) {
-          alert('No data to backup');
-          return;
-        }
-        try {
-          const data = generateXLSX(donations);
-          const blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-          const file = new File([blob], 'temple-donations.xlsx', { type: blob.type });
-          await backupFile(file, 'Donations Backup');
-        } catch (error) {
-          console.error('Error creating backup:', error);
-          alert('Failed to create backup: ' + error.message);
-        }
-      });
-
-      // Expenses logic
-      function expClearErrors() {
-        expRecipientError.classList.add('hidden');
-        expPurposeError.classList.add('hidden');
-        expDateError.classList.add('hidden');
-        expTotalAmountError.classList.add('hidden');
-        expPaidAmountError.classList.add('hidden');
-      }
-
-      expTotalAmount.addEventListener('input', () => {
-        const value = expTotalAmount.value;
-        expTotalAmountError.textContent = !value ? 'Total amount is required.' : Number(value) < 0 ? 'Total amount must be ≥ 0.' : '';
-        expTotalAmountError.classList.toggle('hidden', !expTotalAmountError.textContent);
-        expValidatePaidAmount();
-      });
-
-      expPaidAmount.addEventListener('input', expValidatePaidAmount);
-
-      function expValidatePaidAmount() {
-        const total = Number(expTotalAmount.value);
-        const paid = Number(expPaidAmount.value);
-        expPaidAmountError.textContent = !expPaidAmount.value ? 'Paid amount is required.' : paid < 0 ? 'Paid amount must be ≥ 0.' : isFinite(total) && paid > total ? 'Paid amount cannot exceed total amount.' : '';
-        expPaidAmountError.classList.toggle('hidden', !expPaidAmountError.textContent);
-      }
-
-      expForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        expClearErrors();
-
-        const data = {
-          recipient: expRecipient.value ? expRecipient.value.trim() : '',
-          purpose: expPurpose.value ? expPurpose.value.trim() : '',
-          date: expDate.value,
-          totalAmount: Number(expTotalAmount.value),
-          paidAmount: Number(expPaidAmount.value)
-        };
-
-        let hasError = false;
-        if (!data.recipient) {
-          expRecipientError.classList.remove('hidden');
-          hasError = true;
-        }
-        if (!data.purpose) {
-          expPurposeError.classList.remove('hidden');
-          hasError = true;
-        }
-        if (!data.date || isNaN(new Date(data.date).getTime())) {
-          expDateError.classList.remove('hidden');
-          hasError = true;
-        }
-        if (!expTotalAmount.value || isNaN(data.totalAmount) || data.totalAmount < 0) {
-          expTotalAmountError.textContent = !expTotalAmount.value ? 'Total amount is required.' : 'Total amount must be ≥ 0.';
-          expTotalAmountError.classList.remove('hidden');
-          hasError = true;
-        }
-        if (!expPaidAmount.value || isNaN(data.paidAmount) || data.paidAmount < 0) {
-          expPaidAmountError.textContent = !expPaidAmount.value ? 'Paid amount is required.' : 'Paid amount must be ≥ 0.';
-          expPaidAmountError.classList.remove('hidden');
-          hasError = true;
-        }
-        if (isFinite(data.totalAmount) && isFinite(data.paidAmount) && data.paidAmount > data.totalAmount) {
-          expPaidAmountError.textContent = 'Paid amount cannot exceed total amount.';
-          expPaidAmountError.classList.remove('hidden');
-          hasError = true;
-        }
-
-        if (hasError) {
-          alert('Please fix the errors in the form.');
-          return;
-        }
-
-        const id = expEditingId.value;
-        try {
-          const url = id ? `https://temple-4bpo.onrender.com/api/expenses/${id}` : 'https://temple-4bpo.onrender.com/api/expenses';
-          const method = id ? 'PUT' : 'POST';
-          const response = await fetch(url, {
-            method,
-            headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
-            body: JSON.stringify(data)
-          });
-          if (!response.ok) {
-            const errorText = await response.text();
-            throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
-          }
-          expResetForm();
-          fetchExpenses();
-        } catch (error) {
-          console.error('Error saving expense:', error);
-          alert('Failed to save expense: ' + error.message);
-        }
-      });
-
-      function expResetForm() {
-        expForm.reset();
-        expEditingId.value = '';
-        expDate.valueAsDate = new Date();
-        expClearErrors();
-      }
-      document.getElementById('expResetBtn').addEventListener('click', expResetForm);
-
-      expTbody.addEventListener('click', (e) => {
-        const t = e.target.closest('button');
-        if (!t) return;
-        const id = t.dataset.edit || t.dataset.preview;
-        const eItem = expenses.find(x => x._id === id);
-        if (!eItem) return;
-        if (t.dataset.edit) {
-          expEditingId.value = eItem._id;
-          expRecipient.value = eItem.recipient;
-          expPurpose.value = eItem.purpose;
-          expDate.value = new Date(eItem.date).toISOString().split('T')[0];
-          expTotalAmount.value = eItem.totalAmount;
-          expPaidAmount.value = eItem.paidAmount;
-          expClearErrors();
-          window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-        if (t.dataset.preview) {
-          openModal(eItem, 'expense');
-        }
-      });
-
-      expSearch.addEventListener('input', () => {
-        expSearchText = expSearch.value;
-        renderExpenses();
-      });
-
-      expFilterSel.addEventListener('change', () => {
-        expFilterStatus = expFilterSel.value;
-        renderExpenses();
-      });
-
-      expExportBtn.addEventListener('click', () => {
-        if (!expenses.length) {
-          alert('No data to export');
-          return;
-        }
-        const csv = toCsv(expenses, 'expense');
-        download('temple-expenses.csv', csv, 'text/csv;charset=utf-8');
-      });
-
-      expBackupBtn.addEventListener('click', async () => {
-        if (!expenses.length) {
-          alert('No data to backup');
-          return;
-        }
-        try {
-          const data = generateXLSX(expenses);
-          const blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-          const file = new File([blob], 'temple-expenses.xlsx', { type: blob.type });
-          await backupFile(file, 'Expenses Backup');
-        } catch (error) {
-          console.error('Error creating backup:', error);
-          alert('Failed to create backup: ' + error.message);
-        }
-      });
-
-      function toCsv(rows, type) {
-        if (!rows.length) return '';
-        const headers = type === 'donation' ? ['_id', 'donor', 'eventName', 'eventDate', 'totalAmount', 'paidAmount', 'pendingAmount', 'status'] : ['_id', 'recipient', 'purpose', 'date', 'totalAmount', 'paidAmount', 'pendingAmount', 'status'];
-        const esc = v => `"${String(v ?? '').replace(/"/g, '""')}"`;
-        const lines = [headers.join(',')];
-        for (const r of rows) {
-          lines.push(headers.map(h => esc(h === 'eventDate' || h === 'date' ? new Date(r[h]).toISOString().split('T')[0] : r[h])).join(','));
-        }
-        return lines.join('\n');
-      }
-
-      function generateXLSX(rows) {
-        if (typeof XLSX === 'undefined') {
-          throw new Error('XLSX library is not loaded.');
-        }
-        const ws = XLSX.utils.json_to_sheet(rows);
-        const wb = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(wb, ws, "Data");
-        return XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
-      }
-
-      function download(filename, content, mime = 'text/plain;charset=utf-8') {
-        const blob = new Blob([content], { type: mime });
-        const a = document.createElement('a');
-        a.href = URL.createObjectURL(blob);
-        a.download = filename;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        setTimeout(() => URL.revokeObjectURL(a.href), 1000);
-      }
-
-      async function backupFile(file, title) {
-        const subject = encodeURIComponent(`Temple ${title}`);
-        const body = encodeURIComponent(`Attached is the backup of ${title.toLowerCase()} data from श्री शांतिनाथ दिगम्बर जैन मंदिर.`);
-        const mailtoUrl = `mailto:jainsahil760@gmail.com?subject=${subject}&body=${body}`;
+        const blob = await response.blob();
+        const file = new File([blob], `${currentType}-receipt.pdf`, { type: 'application/pdf' });
 
         if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
           await navigator.share({
             files: [file],
-            title: `Temple ${title}`,
-            text: `Backup of ${title.toLowerCase()} data. Please email to jainsahil760@gmail.com.`
+            title: 'Receipt - श्री शांतिनाथ दिगम्बर जैन मंदिर',
+            text: `Here is your ${currentType} receipt from श्री शांतिनाथ दिगम्बर जैन मंदिर.`
           });
         } else {
-          download(file.name, await file.arrayBuffer(), file.type);
-          window.open(mailtoUrl, '_blank');
-          alert(`Backup file has been downloaded as ${file.name}. Your email client should have opened with a pre-filled email to jainsahil760@gmail.com. Please manually attach the downloaded file to the email and send it.`);
+          const url = URL.createObjectURL(blob);
+          const link = document.createElement('a');
+          link.href = url;
+          link.download = `${currentType}-receipt.pdf`;
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+          URL.revokeObjectURL(url);
+          const message = encodeURIComponent(`Here is your ${currentType} receipt from श्री शांतिनाथ दिगम्बर जैन मंदिर.`);
+          const whatsappUrl = `https://wa.me/?text=${message}`;
+          window.open(whatsappUrl, '_blank');
+          alert('Receipt downloaded. Please manually attach the PDF in WhatsApp.');
         }
+      } catch (error) {
+        console.error('Error sharing PDF:', error);
+        alert('Failed to generate or share receipt: ' + error.message);
+      }
+    });
+
+    function getAuthHeaders() {
+      const token = localStorage.getItem('token');
+      return token ? { 'Authorization': `Bearer ${token}` } : {};
+    }
+
+    async function fetchDonations() {
+      try {
+        const response = await fetch('https://temple-4bpo.onrender.com/api/donations/admin', {
+          headers: getAuthHeaders()
+        });
+        if (!response.ok) {
+          if (response.status === 401 || response.status === 403) {
+            alert('Session expired or unauthorized. Please log in again.');
+            window.location.href = '/login.html';
+            return;
+          }
+          const errorText = await response.text();
+          throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
+        }
+        donations = await response.json();
+        console.log('Fetched donations:', donations); // Debug log to verify fetched data
+        renderDonations();
+      } catch (error) {
+        console.error('Error fetching donations:', error);
+        alert('Failed to fetch donations: ' + error.message);
+      }
+    }
+
+    async function fetchExpenses() {
+      try {
+        const response = await fetch('https://temple-4bpo.onrender.com/api/expenses/admin', {
+          headers: getAuthHeaders()
+        });
+        if (!response.ok) {
+          if (response.status === 401 || response.status === 403) {
+            alert('Session expired or unauthorized. Please log in again.');
+            window.location.href = '/login.html';
+            return;
+          }
+          const errorText = await response.text();
+          throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
+        }
+        expenses = await response.json();
+        console.log('Fetched expenses:', expenses); // Debug log to verify fetched data
+        renderExpenses();
+      } catch (error) {
+        console.error('Error fetching expenses:', error);
+        alert('Failed to fetch expenses: ' + error.message);
+      }
+    }
+
+    function renderDonations() {
+      const q = donSearchText.trim().toLowerCase();
+      const view = donations.filter(d => {
+        const okStatus = donFilterStatus === 'all' ? true : d.status === donFilterStatus;
+        const okSearch = !q ? true : (d.donor.toLowerCase().includes(q) || (d.eventName || '').toLowerCase().includes(q));
+        return okStatus && okSearch;
+      });
+
+      donTotalCount.textContent = donations.length;
+      donPendingCount.textContent = donations.filter(d => d.status === 'pending').length;
+      donCompletedCount.textContent = donations.filter(d => d.status === 'completed').length;
+      donTotalAmountDisplay.textContent = formatCurrency(donations.reduce((s, d) => s + Number(d.totalAmount || 0), 0));
+
+      donTbody.innerHTML = '';
+      if (view.length === 0) {
+        donEmpty.classList.remove('hidden');
+        return;
+      }
+      donEmpty.classList.add('hidden');
+      for (const d of view) {
+        const tr = document.createElement('tr');
+        tr.className = 'border-t border-gray-200 hover:bg-gray-50 transition';
+        tr.innerHTML = `
+          <td class="py-4 px-4 font-medium">${escapeHtml(d.donor)}</td>
+          <td class="py-4 px-4">${escapeHtml(d.eventName || 'None')}</td>
+          <td class="py-4 px-4">${escapeHtml(new Date(d.eventDate).toISOString().split('T')[0])}</td>
+          <td class="py-4 px-4">${formatCurrency(Number(d.totalAmount))}</td>
+          <td class="py-4 px-4">
+            <span class="inline-block px-3 py-1 text-xs font-medium rounded-full ${d.status === 'completed' ? 'bg-[var(--accent-color)] text-[var(--primary-color)]' : 'bg-[#F0E68C] text-[var(--primary-color)]'}">
+              ${d.status.charAt(0).toUpperCase() + d.status.slice(1)}
+            </span>
+          </td>
+          <td class="py-4 px-4 flex gap-2">
+            <button class="px-4 py-1 bg-[var(--accent-color)] text-[var(--primary-color)] rounded-lg hover:bg-[#F0E68C] transition" data-edit="${d._id}" data-type="donation">Edit</button>
+            <button class="px-2 py-1 text-[var(--primary-color)] rounded-lg hover:text-[#5A204A] transition" data-preview="${d._id}" data-type="donation">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+              </svg>
+            </button>
+          </td>
+        `;
+        donTbody.appendChild(tr);
+      }
+    }
+
+    function renderExpenses() {
+      const q = expSearchText.trim().toLowerCase();
+      const view = expenses.filter(e => {
+        const okStatus = expFilterStatus === 'all' ? true : e.status === expFilterStatus;
+        const okSearch = !q ? true : (e.recipient.toLowerCase().includes(q) || (e.purpose || '').toLowerCase().includes(q));
+        return okStatus && okSearch;
+      });
+
+      expTotalCount.textContent = expenses.length;
+      expPendingCount.textContent = expenses.filter(e => e.status === 'pending').length;
+      expCompletedCount.textContent = expenses.filter(e => e.status === 'completed').length;
+      expTotalAmountDisplay.textContent = formatCurrency(expenses.reduce((s, e) => s + Number(e.totalAmount || 0), 0));
+
+      expTbody.innerHTML = '';
+      if (view.length === 0) {
+        expEmpty.classList.remove('hidden');
+        return;
+      }
+      expEmpty.classList.add('hidden');
+      for (const e of view) {
+        const tr = document.createElement('tr');
+        tr.className = 'border-t border-gray-200 hover:bg-gray-50 transition';
+        tr.innerHTML = `
+          <td class="py-4 px-4 font-medium">${escapeHtml(e.recipient)}</td>
+          <td class="py-4 px-4">${escapeHtml(e.purpose || 'None')}</td>
+          <td class="py-4 px-4">${escapeHtml(new Date(e.date).toISOString().split('T')[0])}</td>
+          <td class="py-4 px-4">${formatCurrency(Number(e.totalAmount))}</td>
+          <td class="py-4 px-4">
+            <span class="inline-block px-3 py-1 text-xs font-medium rounded-full ${e.status === 'completed' ? 'bg-[var(--accent-color)] text-[var(--primary-color)]' : 'bg-[#F0E68C] text-[var(--primary-color)]'}">
+              ${e.status.charAt(0).toUpperCase() + e.status.slice(1)}
+            </span>
+          </td>
+          <td class="py-4 px-4 flex gap-2">
+            <button class="px-4 py-1 bg-[var(--accent-color)] text-[var(--primary-color)] rounded-lg hover:bg-[#F0E68C] transition" data-edit="${e._id}" data-type="expense">Edit</button>
+            <button class="px-2 py-1 text-[var(--primary-color)] rounded-lg hover:text-[#5A204A] transition" data-preview="${e._id}" data-type="expense">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+              </svg>
+            </button>
+          </td>
+        `;
+        expTbody.appendChild(tr);
+      }
+    }
+
+    function escapeHtml(s) {
+      return String(s).replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;');
+    }
+
+    // Donations logic
+function donClearErrors() {
+  const errorFields = [
+    'donDonorError',
+    'donEventNameError',
+    'donEventDateError',
+    'donTotalAmountError',
+    'donPaidAmountError',
+    'donStatusError',
+    'donContactError',
+    'donReceiptIdError',
+    'donPaymentModeError'
+  ];
+  errorFields.forEach(field => {
+    const element = document.getElementById(field);
+    if (element) {
+      element.textContent = ''; // Only set textContent if element exists
+    } else {
+      console.warn(`Error element not found: ${field}`); // Debug log for missing elements
+    }
+  });
+}
+
+    donTotalAmount.addEventListener('input', () => {
+      const value = donTotalAmount.value;
+      donTotalAmountError.textContent = !value ? 'Total amount is required.' : Number(value) < 0 ? 'Total amount must be ≥ 0.' : '';
+      donTotalAmountError.classList.toggle('hidden', !donTotalAmountError.textContent);
+      donValidatePaidAmount();
+    });
+
+    donPaidAmount.addEventListener('input', donValidatePaidAmount);
+
+    function donValidatePaidAmount() {
+      const total = Number(donTotalAmount.value);
+      const paid = Number(donPaidAmount.value);
+      donPaidAmountError.textContent = !donPaidAmount.value ? 'Paid amount is required.' : paid < 0 ? 'Paid amount must be ≥ 0.' : isFinite(total) && paid > total ? 'Paid amount cannot exceed total amount.' : '';
+      donPaidAmountError.classList.toggle('hidden', !donPaidAmountError.textContent);
+    }
+
+    donForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      donClearErrors();
+
+      const data = {
+        donor: donDonor.value ? donDonor.value.trim() : '',
+        eventName: donEventName.value ? donEventName.value.trim() : '',
+        eventDate: donEventDate.value,
+        totalAmount: Number(donTotalAmount.value),
+        paidAmount: Number(donPaidAmount.value),
+        contact: donContact.value ? donContact.value.trim() : '',
+        receiptId: donReceiptId.value ? donReceiptId.value.trim() : '',
+        paymentMode: donPaymentMode.value
+      };
+
+      let hasError = false;
+      if (!data.donor) {
+        donDonorError.textContent = 'Donor name is required.';
+        donDonorError.classList.remove('hidden');
+        hasError = true;
+      }
+      if (!data.eventName) {
+        donEventNameError.textContent = 'Event name is required.';
+        donEventNameError.classList.remove('hidden');
+        hasError = true;
+      }
+      if (!data.eventDate || isNaN(new Date(data.eventDate).getTime())) {
+        donEventDateError.textContent = 'Valid event date is required.';
+        donEventDateError.classList.remove('hidden');
+        hasError = true;
+      }
+      if (!donTotalAmount.value || isNaN(data.totalAmount) || data.totalAmount < 0) {
+        donTotalAmountError.textContent = !donTotalAmount.value ? 'Total amount is required.' : 'Total amount must be ≥ 0.';
+        donTotalAmountError.classList.remove('hidden');
+        hasError = true;
+      }
+      if (!donPaidAmount.value || isNaN(data.paidAmount) || data.paidAmount < 0) {
+        donPaidAmountError.textContent = !donPaidAmount.value ? 'Paid amount is required.' : 'Paid amount must be ≥ 0.';
+        donPaidAmountError.classList.remove('hidden');
+        hasError = true;
+      }
+      if (isFinite(data.totalAmount) && isFinite(data.paidAmount) && data.paidAmount > data.totalAmount) {
+        donPaidAmountError.textContent = 'Paid amount cannot exceed total amount.';
+        donPaidAmountError.classList.remove('hidden');
+        hasError = true;
+      }
+      // Optional validation for contact
+      if (data.contact && !/^\+?\d{10,15}$/.test(data.contact)) {
+        donContactError.textContent = 'Invalid contact number (10-15 digits).';
+        donContactError.classList.remove('hidden');
+        hasError = true;
+      }
+      // Optional validation for receiptId
+      if (data.receiptId && !/^[a-zA-Z0-9-]+$/.test(data.receiptId)) {
+        donReceiptIdError.textContent = 'Invalid receipt ID (alphanumeric and hyphens only).';
+        donReceiptIdError.classList.remove('hidden');
+        hasError = true;
       }
 
-      fetchDonations();
-      fetchExpenses();
+      if (hasError) {
+        alert('Please fix the errors in the form.');
+        return;
+      }
+
+      console.log('Submitting donation data:', data); // Debug log to verify data before sending
+
+      const id = donEditingId.value;
+      try {
+        const url = id ? `https://temple-4bpo.onrender.com/api/donations/${id}` : 'https://temple-4bpo.onrender.com/api/donations';
+        const method = id ? 'PUT' : 'POST';
+        const response = await fetch(url, {
+          method,
+          headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
+          body: JSON.stringify(data)
+        });
+        if (!response.ok) {
+          const errorText = await response.text();
+          throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
+        }
+        const savedData = await response.json();
+        console.log('Saved donation:', savedData); // Debug log to verify saved data
+        donResetForm();
+        fetchDonations();
+        alert('Donation saved successfully.');
+      } catch (error) {
+        console.error('Error saving donation:', error);
+        alert('Failed to save donation: ' + error.message);
+      }
     });
-  </script>
+
+    function donResetForm() {
+      donForm.reset();
+      donEditingId.value = '';
+      donEventDate.valueAsDate = new Date();
+      donClearErrors();
+    }
+    document.getElementById('donResetBtn').addEventListener('click', donResetForm);
+
+    donTbody.addEventListener('click', (e) => {
+      const t = e.target.closest('button');
+      if (!t) return;
+      const id = t.dataset.edit || t.dataset.preview;
+      const d = donations.find(x => x._id === id);
+      if (!d) return;
+      if (t.dataset.edit) {
+        donEditingId.value = d._id;
+        donDonor.value = d.donor;
+        donEventName.value = d.eventName;
+        donEventDate.value = new Date(d.eventDate).toISOString().split('T')[0];
+        donTotalAmount.value = d.totalAmount;
+        donPaidAmount.value = d.paidAmount;
+        donContact.value = d.contact || '';
+        donReceiptId.value = d.receiptId || '';
+        donPaymentMode.value = d.paymentMode || 'cash';
+        donClearErrors();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+      if (t.dataset.preview) {
+        openModal(d, 'donation');
+      }
+    });
+
+    donSearch.addEventListener('input', () => {
+      donSearchText = donSearch.value;
+      renderDonations();
+    });
+
+    donFilterSel.addEventListener('change', () => {
+      donFilterStatus = donFilterSel.value;
+      renderDonations();
+    });
+
+    donExportBtn.addEventListener('click', () => {
+      if (!donations.length) {
+        alert('No data to export');
+        return;
+      }
+      const csv = toCsv(donations, 'donation');
+      download('temple-donations.csv', csv, 'text/csv;charset=utf-8');
+    });
+
+    donBackupBtn.addEventListener('click', async () => {
+      if (!donations.length) {
+        alert('No data to backup');
+        return;
+      }
+      try {
+        const data = generateXLSX(donations);
+        const blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+        const file = new File([blob], 'temple-donations.xlsx', { type: blob.type });
+        await backupFile(file, 'Donations Backup');
+      } catch (error) {
+        console.error('Error creating backup:', error);
+        alert('Failed to create backup: ' + error.message);
+      }
+    });
+
+    // Expenses logic
+    function expClearErrors() {
+      ['expRecipientError', 'expPurposeError', 'expDateError', 'expTotalAmountError', 'expPaidAmountError', 'expContactError', 'expReceiptIdError'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+          el.textContent = '';
+          el.classList.add('hidden');
+        }
+      });
+    }
+
+    expTotalAmount.addEventListener('input', () => {
+      const value = expTotalAmount.value;
+      expTotalAmountError.textContent = !value ? 'Total amount is required.' : Number(value) < 0 ? 'Total amount must be ≥ 0.' : '';
+      expTotalAmountError.classList.toggle('hidden', !expTotalAmountError.textContent);
+      expValidatePaidAmount();
+    });
+
+    expPaidAmount.addEventListener('input', expValidatePaidAmount);
+
+    function expValidatePaidAmount() {
+      const total = Number(expTotalAmount.value);
+      const paid = Number(expPaidAmount.value);
+      expPaidAmountError.textContent = !expPaidAmount.value ? 'Paid amount is required.' : paid < 0 ? 'Paid amount must be ≥ 0.' : isFinite(total) && paid > total ? 'Paid amount cannot exceed total amount.' : '';
+      expPaidAmountError.classList.toggle('hidden', !expPaidAmountError.textContent);
+    }
+
+    expForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      expClearErrors();
+
+      const data = {
+        recipient: expRecipient.value ? expRecipient.value.trim() : '',
+        purpose: expPurpose.value ? expPurpose.value.trim() : '',
+        date: expDate.value,
+        totalAmount: parseFloat(expTotalAmount.value),
+        paidAmount: parseFloat(expPaidAmount.value),
+        contact: expContact.value ? expContact.value.trim() : '',
+        receiptId: expReceiptId.value ? expReceiptId.value.trim() : '',
+        paymentMode: expPaymentMode.value
+      };
+
+      let hasError = false;
+      if (!data.recipient) {
+        expRecipientError.textContent = 'Recipient name is required.';
+        expRecipientError.classList.remove('hidden');
+        hasError = true;
+      }
+      if (!data.purpose) {
+        expPurposeError.textContent = 'Purpose is required.';
+        expPurposeError.classList.remove('hidden');
+        hasError = true;
+      }
+      if (!data.date || isNaN(new Date(data.date).getTime())) {
+        expDateError.textContent = 'Valid date is required.';
+        expDateError.classList.remove('hidden');
+        hasError = true;
+      }
+      if (!expTotalAmount.value || isNaN(data.totalAmount) || data.totalAmount < 0) {
+        expTotalAmountError.textContent = !expTotalAmount.value ? 'Total amount is required.' : 'Total amount must be ≥ 0.';
+        expTotalAmountError.classList.remove('hidden');
+        hasError = true;
+      }
+      if (!expPaidAmount.value || isNaN(data.paidAmount) || data.paidAmount < 0) {
+        expPaidAmountError.textContent = !expPaidAmount.value ? 'Paid amount is required.' : 'Paid amount must be ≥ 0.';
+        expPaidAmountError.classList.remove('hidden');
+        hasError = true;
+      }
+      if (isFinite(data.totalAmount) && isFinite(data.paidAmount) && data.paidAmount > data.totalAmount) {
+        expPaidAmountError.textContent = 'Paid amount cannot exceed total amount.';
+        expPaidAmountError.classList.remove('hidden');
+        hasError = true;
+      }
+      // Optional validation for contact
+      if (data.contact && !/^\+?\d{10,15}$/.test(data.contact)) {
+        expContactError.textContent = 'Invalid contact number (10-15 digits).';
+        expContactError.classList.remove('hidden');
+        hasError = true;
+      }
+      // Optional validation for receiptId
+      if (data.receiptId && !/^[a-zA-Z0-9-]+$/.test(data.receiptId)) {
+        expReceiptIdError.textContent = 'Invalid receipt ID (alphanumeric and hyphens only).';
+        expReceiptIdError.classList.remove('hidden');
+        hasError = true;
+      }
+
+      if (hasError) {
+        alert('Please fix the errors in the form.');
+        return;
+      }
+
+      console.log('Submitting expense data:', data); // Debug log to verify data before sending
+
+      const id = expEditingId.value;
+      try {
+        const url = id ? `https://temple-4bpo.onrender.com/api/expenses/${id}` : 'https://temple-4bpo.onrender.com/api/expenses';
+        const method = id ? 'PUT' : 'POST';
+        const response = await fetch(url, {
+          method,
+          headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
+          body: JSON.stringify(data)
+        });
+        if (!response.ok) {
+          const errorText = await response.text();
+          throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
+        }
+        const savedData = await response.json();
+        console.log('Saved expense:', savedData); // Debug log to verify saved data
+        expResetForm();
+        fetchExpenses();
+        alert('Expense saved successfully.');
+      } catch (error) {
+        console.error('Error saving expense:', error);
+        alert('Failed to save expense: ' + error.message);
+      }
+    });
+
+    function expResetForm() {
+      expForm.reset();
+      expEditingId.value = '';
+      expDate.valueAsDate = new Date();
+      expClearErrors();
+    }
+    document.getElementById('expResetBtn').addEventListener('click', expResetForm);
+
+    expTbody.addEventListener('click', (e) => {
+      const t = e.target.closest('button');
+      if (!t) return;
+      const id = t.dataset.edit || t.dataset.preview;
+      const eItem = expenses.find(x => x._id === id);
+      if (!eItem) return;
+      console.log('Editing or previewing expense:', eItem); // Debug log
+      if (t.dataset.edit) {
+        expEditingId.value = eItem._id;
+        expRecipient.value = eItem.recipient;
+        expPurpose.value = eItem.purpose;
+        expDate.value = new Date(eItem.date).toISOString().split('T')[0];
+        expTotalAmount.value = eItem.totalAmount;
+        expPaidAmount.value = eItem.paidAmount;
+        expContact.value = eItem.contact || '';
+        expReceiptId.value = eItem.receiptId || '';
+        expPaymentMode.value = eItem.paymentMode || 'cash';
+        expClearErrors();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+      if (t.dataset.preview) {
+        openModal(eItem, 'expense');
+      }
+    });
+
+    expSearch.addEventListener('input', () => {
+      expSearchText = expSearch.value;
+      renderExpenses();
+    });
+
+    expFilterSel.addEventListener('change', () => {
+      expFilterStatus = expFilterSel.value;
+      renderExpenses();
+    });
+
+    expExportBtn.addEventListener('click', () => {
+      if (!expenses.length) {
+        alert('No data to export');
+        return;
+      }
+      const csv = toCsv(expenses, 'expense');
+      download('temple-expenses.csv', csv, 'text/csv;charset=utf-8');
+    });
+
+    expBackupBtn.addEventListener('click', async () => {
+      if (!expenses.length) {
+        alert('No data to backup');
+        return;
+      }
+      try {
+        const data = generateXLSX(expenses);
+        const blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+        const file = new File([blob], 'temple-expenses.xlsx', { type: blob.type });
+        await backupFile(file, 'Expenses Backup');
+      } catch (error) {
+        console.error('Error creating backup:', error);
+        alert('Failed to create backup: ' + error.message);
+      }
+    });
+
+    function toCsv(rows, type) {
+      if (!rows.length) return '';
+      const headers = type === 'donation' ? ['_id', 'donor', 'eventName', 'eventDate', 'totalAmount', 'paidAmount', 'pendingAmount', 'status', 'contact', 'receiptId', 'paymentMode'] : ['_id', 'recipient', 'purpose', 'date', 'totalAmount', 'paidAmount', 'pendingAmount', 'status', 'contact', 'receiptId', 'paymentMode'];
+      const esc = v => `"${String(v ?? '').replace(/"/g, '""')}"`;
+      const lines = [headers.join(',')];
+      for (const r of rows) {
+        lines.push(headers.map(h => esc(h === 'eventDate' || h === 'date' ? new Date(r[h]).toISOString().split('T')[0] : r[h])).join(','));
+      }
+      return lines.join('\n');
+    }
+
+    function generateXLSX(rows) {
+      if (typeof XLSX === 'undefined') {
+        throw new Error('XLSX library is not loaded.');
+      }
+      const ws = XLSX.utils.json_to_sheet(rows);
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, "Data");
+      return XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+    }
+
+    function download(filename, content, mime = 'text/plain;charset=utf-8') {
+      const blob = new Blob([content], { type: mime });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+    }
+
+    async function backupFile(file, title) {
+      const subject = encodeURIComponent(`Temple ${title}`);
+      const body = encodeURIComponent(`Attached is the backup of ${title.toLowerCase()} data from श्री शांतिनाथ दिगम्बर जैन मंदिर.`);
+      const mailtoUrl = `mailto:jainsahil760@gmail.com?subject=${subject}&body=${body}`;
+
+      if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+        await navigator.share({
+          files: [file],
+          title: `Temple ${title}`,
+          text: `Backup of ${title.toLowerCase()} data. Please email to jainsahil760@gmail.com.`
+        });
+      } else {
+        download(file.name, await file.arrayBuffer(), file.type);
+        window.open(mailtoUrl, '_blank');
+        alert(`Backup file has been downloaded as ${file.name}. Your email client should have opened with a pre-filled email to jainsahil760@gmail.com. Please manually attach the downloaded file to the email and send it.`);
+      }
+    }
+
+    fetchDonations();
+    fetchExpenses();
+  });
+</script>
 </body>
 </html>
