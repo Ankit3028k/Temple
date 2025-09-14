@@ -9,7 +9,6 @@ import jwt from 'jsonwebtoken';
 import { PDFDocument, rgb } from 'pdf-lib';
 import fs from 'fs/promises';
 import { PythonShell } from 'python-shell';
-import os from "os";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -460,63 +459,30 @@ app.get('/api/expenses/summary', async (req, res) => {
   }
 });
 
-// app.post('/api/generate-pdf', authenticateToken, async (req, res) => {
-//   const data = req.body; // { type, donor, eventName, eventDate, totalAmount, paidAmount, pendingAmount, status, issueDate }
-//   const inputPdf = 'template.pdf'; // Path to your your template PDF (ensure it exists in the server directory)
-//   const outputPdf = `output_${Date.now()}.pdf`;
-
-//   try {
-//     // Call the Python script with arguments
-//     await PythonShell.run('modify_pdf.py', {
-//       args: [inputPdf, outputPdf, JSON.stringify(data)]
-//     });
-
-//     // Read the generated PDF
-//     const pdfBuffer = await fs.readFile(outputPdf);
-//     res.setHeader('Content-Type', 'application/pdf');
-//     res.setHeader('Content-Disposition', `attachment; filename=${outputPdf}`);
-//     res.send(pdfBuffer);
-
-//     // Clean up the output file
-//     await fs.unlink(outputPdf);
-//   } catch (error) {
-//     console.error('Error generating PDF:', error);
-//     res.status(500).json({ error: 'Failed to generate PDF' });
-//   }
-// });
-
-
-// Generate PDF (Render-safe, no leftover temp files)
-app.post("/api/generate-pdf", authenticateToken, async (req, res) => {
-  const data = req.body;
-  const inputPdf = path.join(__dirname, "template.pdf");
+app.post('/api/generate-pdf', authenticateToken, async (req, res) => {
+  const data = req.body; // { type, donor, eventName, eventDate, totalAmount, paidAmount, pendingAmount, status, issueDate }
+  const inputPdf = 'template.pdf'; // Path to your your template PDF (ensure it exists in the server directory)
+  const outputPdf = `output_${Date.now()}.pdf`;
 
   try {
-    // check template exists
-    await fs.access(inputPdf);
-
-    // ✅ cross-platform temp path
-    const tmpDir = os.tmpdir();
-    const outputPdf = path.join(tmpDir, `output_${Date.now()}.pdf`);
-
-    await PythonShell.run("modify_pdf.py", {
-      args: [inputPdf, outputPdf, JSON.stringify(data)],
+    // Call the Python script with arguments
+    await PythonShell.run('modify_pdf.py', {
+      args: [inputPdf, outputPdf, JSON.stringify(data)]
     });
 
+    // Read the generated PDF
     const pdfBuffer = await fs.readFile(outputPdf);
-
-    res.setHeader("Content-Type", "application/pdf");
-    res.setHeader("Content-Disposition", "attachment; filename=receipt.pdf");
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', `attachment; filename=${outputPdf}`);
     res.send(pdfBuffer);
 
-    await fs.unlink(outputPdf).catch(() => {});
+    // Clean up the output file
+    await fs.unlink(outputPdf);
   } catch (error) {
-    console.error("❌ Error generating PDF:", error);
-    res.status(500).json({ error: "Failed to generate PDF" });
+    console.error('Error generating PDF:', error);
+    res.status(500).json({ error: 'Failed to generate PDF' });
   }
 });
-
-
 
 // Receipt Generation Endpoint (optional, kept for reference but not used in client)
 app.get('/api/receipt/:type/:id', authenticateToken, async (req, res) => {

@@ -1178,69 +1178,135 @@
       }
     });
 
+    // shareWhatsAppBtn.addEventListener('click', async () => {
+    //   if (!currentItem || !currentType) {
+    //     alert('No receipt data available.');
+    //     return;
+    //   }
+
+    //   try {
+    //     const issueDate = new Date().toISOString().split('T')[0];
+    //     const data = {
+    //       ...currentItem,
+    //       issueDate,
+    //       type: currentType,
+    //       eventDate: currentType === 'donation' ? currentItem.eventDate : undefined,
+    //       date: currentType === 'expense' ? currentItem.date : undefined,
+    //       pendingAmount: currentItem.totalAmount - currentItem.paidAmount,
+    //       contact: currentItem.contact || '',
+    //       receiptId: currentItem.receiptId || '',
+    //       paymentMode: currentItem.paymentMode || 'cash'
+    //     };
+
+    //     console.log('Sending PDF data:', data); // Debug log to verify data sent to backend
+
+    //     const response = await fetch('https://temple-4bpo.onrender.com/api/generate-pdf', {
+    //       method: 'POST',
+    //       headers: {
+    //         'Content-Type': 'application/json',
+    //         'Authorization': `Bearer ${localStorage.getItem('token')}`
+    //       },
+    //       body: JSON.stringify(data)
+    //     });
+
+    //     if (!response.ok) {
+    //       throw new Error(`Failed to generate PDF: ${response.statusText}`);
+    //     }
+
+    //     const blob = await response.blob();
+    //     const file = new File([blob], `${currentType}-receipt.pdf`, { type: 'application/pdf' });
+
+    //     if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+    //       await navigator.share({
+    //         files: [file],
+    //         title: 'Receipt - श्री शांतिनाथ दिगम्बर जैन मंदिर',
+    //         text: `Here is your ${currentType} receipt from श्री शांतिनाथ दिगम्बर जैन मंदिर.`
+    //       });
+    //     } else {
+    //       const url = URL.createObjectURL(blob);
+    //       const link = document.createElement('a');
+    //       link.href = url;
+    //       link.download = `${currentType}-receipt.pdf`;
+    //       document.body.appendChild(link);
+    //       link.click();
+    //       document.body.removeChild(link);
+    //       URL.revokeObjectURL(url);
+    //       const message = encodeURIComponent(`Here is your ${currentType} receipt from श्री शांतिनाथ दिगम्बर जैन मंदिर.`);
+    //       const whatsappUrl = `https://wa.me/?text=${message}`;
+    //       window.open(whatsappUrl, '_blank');
+    //       alert('Receipt downloaded. Please manually attach the PDF in WhatsApp.');
+    //     }
+    //   } catch (error) {
+    //     console.error('Error sharing PDF:', error);
+    //     alert('Failed to generate or share receipt: ' + error.message);
+    //   }
+    // });
+
     shareWhatsAppBtn.addEventListener('click', async () => {
-      if (!currentItem || !currentType) {
-        alert('No receipt data available.');
-        return;
-      }
+  if (!currentItem || !currentType) {
+    alert('No receipt data available.');
+    return;
+  }
 
-      try {
-        const issueDate = new Date().toISOString().split('T')[0];
-        const data = {
-          ...currentItem,
-          issueDate,
-          type: currentType,
-          eventDate: currentType === 'donation' ? currentItem.eventDate : undefined,
-          date: currentType === 'expense' ? currentItem.date : undefined,
-          pendingAmount: currentItem.totalAmount - currentItem.paidAmount,
-          contact: currentItem.contact || '',
-          receiptId: currentItem.receiptId || '',
-          paymentMode: currentItem.paymentMode || 'cash'
-        };
+  try {
+    const issueDate = new Date().toISOString().split('T')[0];
+    const data = {
+      ...currentItem,
+      issueDate,
+      type: currentType,
+      eventDate: currentType === 'donation' ? currentItem.eventDate : undefined,
+      date: currentType === 'expense' ? currentItem.date : undefined,
+      pendingAmount: currentItem.totalAmount - currentItem.paidAmount,
+      contact: currentItem.contact || '',
+      receiptId: currentItem.receiptId || '',
+      paymentMode: currentItem.paymentMode || 'cash'
+    };
 
-        console.log('Sending PDF data:', data); // Debug log to verify data sent to backend
-
-        const response = await fetch('https://temple-4bpo.onrender.com/api/generate-pdf', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${localStorage.getItem('token')}`
-          },
-          body: JSON.stringify(data)
-        });
-
-        if (!response.ok) {
-          throw new Error(`Failed to generate PDF: ${response.statusText}`);
-        }
-
-        const blob = await response.blob();
-        const file = new File([blob], `${currentType}-receipt.pdf`, { type: 'application/pdf' });
-
-        if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
-          await navigator.share({
-            files: [file],
-            title: 'Receipt - श्री शांतिनाथ दिगम्बर जैन मंदिर',
-            text: `Here is your ${currentType} receipt from श्री शांतिनाथ दिगम्बर जैन मंदिर.`
-          });
-        } else {
-          const url = URL.createObjectURL(blob);
-          const link = document.createElement('a');
-          link.href = url;
-          link.download = `${currentType}-receipt.pdf`;
-          document.body.appendChild(link);
-          link.click();
-          document.body.removeChild(link);
-          URL.revokeObjectURL(url);
-          const message = encodeURIComponent(`Here is your ${currentType} receipt from श्री शांतिनाथ दिगम्बर जैन मंदिर.`);
-          const whatsappUrl = `https://wa.me/?text=${message}`;
-          window.open(whatsappUrl, '_blank');
-          alert('Receipt downloaded. Please manually attach the PDF in WhatsApp.');
-        }
-      } catch (error) {
-        console.error('Error sharing PDF:', error);
-        alert('Failed to generate or share receipt: ' + error.message);
-      }
+    const response = await fetch('https://temple-4bpo.onrender.com/api/generate-pdf', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${localStorage.getItem('token')}`
+      },
+      body: JSON.stringify(data)
     });
+
+    if (!response.ok) {
+      throw new Error(`Failed to generate PDF: ${response.statusText}`);
+    }
+
+    const blob = await response.blob();
+    const file = new File([blob], 'JainMandirReceipt.pdf', { type: 'application/pdf' });
+
+    const recipientName = currentType === 'donation' ? currentItem.donor : currentItem.recipient;
+    const message = `जय जिनेन्द्र 🙏\nआदरणीय ${recipientName}\nकृपया ${currentType === 'donation' ? 'दान' : 'व्यय'} की रसीद प्राप्त करें,\nसादर,\nश्री दिगम्बर जैन भगवान शांतिनाथ प्रभावना समिति`;
+
+    if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+      await navigator.share({
+        files: [file],
+        title: 'Receipt - श्री शांतिनाथ दिगम्बर जैन मंदिर',
+        text: message
+      });
+    } else {
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'JainMandirReceipt.pdf';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+      const encodedMessage = encodeURIComponent(message);
+      const whatsappUrl = `https://wa.me/?text=${encodedMessage}`;
+      window.open(whatsappUrl, '_blank');
+      alert('Receipt downloaded as JainMandirReceipt.pdf. Please manually attach the PDF in WhatsApp.');
+    }
+  } catch (error) {
+    console.error('Error sharing PDF:', error);
+    alert('Failed to generate or share receipt: ' + error.message);
+  }
+});
+
 
     function getAuthHeaders() {
       const token = localStorage.getItem('token');
