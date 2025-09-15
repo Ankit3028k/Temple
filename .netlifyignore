@@ -1,0 +1,13 @@
+# Ignore backend files for Netlify deployment
+requirements.txt
+Dockerfile
+build.sh
+render.yaml
+server.js
+modify_pdf.py
+template.pdf
+package.json
+package-lock.json
+node_modules/
+*.py
+*.sh

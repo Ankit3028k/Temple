@@ -1,0 +1,18 @@
+[build]
+  # No build command needed for static site
+  command = ""
+  
+  # Publish directory (current directory)
+  publish = "."
+  
+  # Ignore backend files
+  ignore = "requirements.txt,Dockerfile,build.sh,render.yaml,server.js,modify_pdf.py,template.pdf,package.json,package-lock.json,*.py,*.sh"
+
+[build.environment]
+  # No Python needed for frontend
+
+[[redirects]]
+  # Handle client-side routing
+  from = "/*"
+  to = "/index.html"
+  status = 200
