@@ -1200,7 +1200,7 @@
 
     //     console.log('Sending PDF data:', data); // Debug log to verify data sent to backend
 
-    //     const response = await fetch('https://temple-4bpo.onrender.com/api/generate-pdf', {
+    //     const response = await fetch('https://temple-1.onrender.com/api/generate-pdf', {
     //       method: 'POST',
     //       headers: {
     //         'Content-Type': 'application/json',
@@ -1262,7 +1262,7 @@
       paymentMode: currentItem.paymentMode || 'cash'
     };
 
-    const response = await fetch('https://temple-4bpo.onrender.com/api/generate-pdf', {
+    const response = await fetch('https://temple-1.onrender.com/api/generate-pdf', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -1317,7 +1317,7 @@
       try {
 
         
-        const response = await fetch('https://temple-4bpo.onrender.com/api/donations/admin', {
+        const response = await fetch('https://temple-1.onrender.com/api/donations/admin', {
           headers: getAuthHeaders()
         });
         if (!response.ok) {
@@ -1340,7 +1340,7 @@
 
     async function fetchExpenses() {
       try {
-        const response = await fetch('https://temple-4bpo.onrender.com/api/expenses/admin', {
+        const response = await fetch('https://temple-1.onrender.com/api/expenses/admin', {
           headers: getAuthHeaders()
         });
         if (!response.ok) {
@@ -1564,7 +1564,7 @@ function donClearErrors() {
 
       const id = donEditingId.value;
       try {
-        const url = id ? `https://temple-4bpo.onrender.com/api/donations/${id}` : 'https://temple-4bpo.onrender.com/api/donations';
+        const url = id ? `https://temple-1.onrender.com/api/donations/${id}` : 'https://temple-1.onrender.com/api/donations';
         const method = id ? 'PUT' : 'POST';
         const response = await fetch(url, {
           method,
@@ -1748,7 +1748,7 @@ function donClearErrors() {
 
       const id = expEditingId.value;
       try {
-        const url = id ? `https://temple-4bpo.onrender.com/api/expenses/${id}` : 'https://temple-4bpo.onrender.com/api/expenses';
+        const url = id ? `https://temple-1.onrender.com/api/expenses/${id}` : 'https://temple-1.onrender.com/api/expenses';
         const method = id ? 'PUT' : 'POST';
         const response = await fetch(url, {
           method,
