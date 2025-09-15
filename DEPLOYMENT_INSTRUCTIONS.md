@@ -1,13 +1,13 @@
 # Deployment Instructions for Render
 
-## Solution 1: Render's Native Multi-Language Support
+## Docker-Based Deployment (Recommended)
 
-This solution allows you to run both Node.js and Python on Render using their native multi-language support.
+This solution uses Docker to properly install both Node.js and Python dependencies on Render.
 
 ### Files Required for Deployment
 
-1. **requirements.txt** - Contains Python dependencies
-2. **render.yaml** - Render configuration file
+1. **Dockerfile** - Docker configuration for multi-language support
+2. **requirements.txt** - Contains Python dependencies
 3. **server.js** - Updated with Python path configuration
 4. **modify_pdf.py** - Python script for PDF generation
 5. **template.pdf** - PDF template file
@@ -18,7 +18,7 @@ This solution allows you to run both Node.js and Python on Render using their na
    ```bash
    git init
    git add .
-   git commit -m "Initial commit with Render configuration"
+   git commit -m "Docker-based deployment with Python support"
    git branch -M main
    git remote add origin <your-github-repo-url>
    git push -u origin main
@@ -32,9 +32,9 @@ This solution allows you to run both Node.js and Python on Render using their na
 
 3. **Configure the Service**:
    - **Name**: `temple-donation-manager`
-   - **Environment**: `Node`
-   - **Build Command**: Leave empty (will use render.yaml)
-   - **Start Command**: Leave empty (will use render.yaml)
+   - **Environment**: `Docker`
+   - **Build Command**: Leave empty (Docker will handle)
+   - **Start Command**: Leave empty (Docker will handle)
 
 4. **Add Environment Variables**:
    - `MONGODB_URI`: Your MongoDB connection string
@@ -43,17 +43,17 @@ This solution allows you to run both Node.js and Python on Render using their na
 
 5. **Deploy**:
    - Click "Create Web Service"
-   - Render will automatically use the `render.yaml` configuration
-   - The build process will:
+   - Render will build the Docker image which will:
      - Install Node.js dependencies
-     - Install Python 3 and pip
+     - Install Python 3, pip, and development tools
      - Install PyMuPDF from requirements.txt
+     - Test PyMuPDF installation
 
 ### How It Works
 
-- **Build Process**: The `render.yaml` file configures Render to install both Node.js and Python dependencies
-- **Runtime**: Your Node.js server runs normally and calls Python scripts using `python-shell`
-- **Python Path**: The server uses `python3` as configured in the environment variable
+- **Build Process**: Docker installs all dependencies in a controlled environment
+- **Runtime**: Your Node.js server runs with Python available
+- **Python Path**: The server uses `python3` as configured
 
 ### Troubleshooting
 
