@@ -501,6 +501,7 @@ app.post("/api/generate-pdf", authenticateToken, async (req, res) => {
 
     await PythonShell.run("modify_pdf.py", {
       args: [inputPdf, outputPdf, JSON.stringify(data)],
+      pythonPath: process.env.PYTHON_EXECUTABLE || 'python3',
     });
 
     const pdfBuffer = await fs.readFile(outputPdf);
