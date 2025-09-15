@@ -63,6 +63,20 @@ If you encounter issues:
 2. **Verify Python Path**: Ensure `python3` is available
 3. **Check File Permissions**: Ensure all files are committed to git
 4. **Template PDF**: Make sure `template.pdf` exists in your repository
+5. **PyMuPDF Installation**: Check if PyMuPDF compiled successfully during build
+6. **Server Logs**: Check Render logs for detailed error messages with emojis
+
+### Common Issues and Solutions
+
+**500 Error on PDF Generation**:
+- Check if PyMuPDF installed correctly during build
+- Verify `template.pdf` exists in repository
+- Check server logs for detailed Python error messages
+
+**Python Module Not Found**:
+- Ensure `requirements.txt` includes all dependencies
+- Check build logs for pip installation errors
+- Verify Python development headers are installed (`python3-dev`)
 
 ### Alternative Manual Configuration
 
@@ -70,7 +84,7 @@ If `render.yaml` doesn't work, you can manually configure:
 
 1. **Build Command**:
    ```bash
-   npm install && apt-get update && apt-get install -y python3 python3-pip && pip3 install -r requirements.txt
+   npm install && apt-get update && apt-get install -y python3 python3-pip python3-dev && pip3 install --upgrade pip && pip3 install -r requirements.txt
    ```
 
 2. **Start Command**:

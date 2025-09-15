@@ -83,7 +83,7 @@
                 if (response.ok) {
                     const data = await response.json();
                     localStorage.setItem('token', data.accessToken);
-                    window.location.href = '/Temple/admin.html';
+                    window.location.href = '/admin.html';
                 } else {
                     const errorData = await response.text();
                     showPopup('Login Failed', `Login failed: ${errorData}`);

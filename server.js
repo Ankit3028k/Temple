@@ -491,29 +491,75 @@ app.post("/api/generate-pdf", authenticateToken, async (req, res) => {
   const data = req.body;
   const inputPdf = path.join(__dirname, "template.pdf");
 
+  console.log("📄 PDF Generation Request:", {
+    dataType: data.type,
+    pythonPath: process.env.PYTHON_EXECUTABLE || 'python3',
+    templatePath: inputPdf,
+    tmpDir: os.tmpdir()
+  });
+
   try {
     // check template exists
     await fs.access(inputPdf);
+    console.log("✅ Template PDF found");
 
     // ✅ cross-platform temp path
     const tmpDir = os.tmpdir();
     const outputPdf = path.join(tmpDir, `output_${Date.now()}.pdf`);
+    console.log("📁 Output path:", outputPdf);
 
-    await PythonShell.run("modify_pdf.py", {
+    // Add current date if not provided
+    if (!data.issueDate) {
+      data.issueDate = new Date().toISOString();
+    }
+
+    console.log("🐍 Running Python script...");
+    const pythonOptions = {
       args: [inputPdf, outputPdf, JSON.stringify(data)],
       pythonPath: process.env.PYTHON_EXECUTABLE || 'python3',
-    });
+      scriptPath: __dirname
+    };
+
+    const results = await PythonShell.run("modify_pdf.py", pythonOptions);
+    console.log("🐍 Python output:", results);
+
+    // Check if output file was created
+    await fs.access(outputPdf);
+    console.log("✅ Output PDF created");
 
     const pdfBuffer = await fs.readFile(outputPdf);
+    console.log("📖 PDF buffer size:", pdfBuffer.length);
 
     res.setHeader("Content-Type", "application/pdf");
     res.setHeader("Content-Disposition", "attachment; filename=receipt.pdf");
     res.send(pdfBuffer);
 
-    await fs.unlink(outputPdf).catch(() => {});
+    // Clean up
+    await fs.unlink(outputPdf).catch((err) => {
+      console.log("🧹 Cleanup warning:", err.message);
+    });
+    
+    console.log("✅ PDF generation completed successfully");
+
   } catch (error) {
-    console.error("❌ Error generating PDF:", error);
-    res.status(500).json({ error: "Failed to generate PDF" });
+    console.error("❌ Error generating PDF:", {
+      message: error.message,
+      stack: error.stack,
+      pythonPath: process.env.PYTHON_EXECUTABLE || 'python3'
+    });
+    
+    // More specific error messages
+    let errorMessage = "Failed to generate PDF";
+    if (error.message.includes("ENOENT")) {
+      errorMessage = "Python script or template not found";
+    } else if (error.message.includes("python")) {
+      errorMessage = "Python execution error";
+    }
+    
+    res.status(500).json({ 
+      error: errorMessage,
+      details: error.message 
+    });
   }
 });
 

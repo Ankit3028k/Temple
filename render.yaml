@@ -5,8 +5,10 @@ services:
     plan: starter
     buildCommand: |
       npm install
-      apt-get update && apt-get install -y python3 python3-pip
+      apt-get update && apt-get install -y python3 python3-pip python3-dev
+      pip3 install --upgrade pip
       pip3 install -r requirements.txt
+      python3 -c "import fitz; print('PyMuPDF installed successfully')"
     startCommand: node server.js
     envVars:
       - key: NODE_ENV
