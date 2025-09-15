@@ -3,7 +3,7 @@ services:
     name: temple-donation-manager
     env: node
     plan: starter
-    buildCommand: npm run build
+    buildCommand: chmod +x build.sh && ./build.sh
     startCommand: node server.js
     envVars:
       - key: NODE_ENV
