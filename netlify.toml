@@ -2,14 +2,12 @@
   # No build command needed for static site
   command = ""
   
-  # Publish directory (current directory)
-  publish = "."
-  
-  # Ignore backend files
-  ignore = "requirements.txt,Dockerfile,build.sh,render.yaml,server.js,modify_pdf.py,template.pdf,package.json,package-lock.json,*.py,*.sh"
+  # Publish directory - frontend files only
+  publish = "../frontend"
 
 [build.environment]
-  # No Python needed for frontend
+  # Disable Python detection
+  PYTHON_VERSION = ""
 
 [[redirects]]
   # Handle client-side routing
